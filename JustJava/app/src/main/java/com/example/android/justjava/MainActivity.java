@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.NumberFormat;
 
 /**
@@ -23,26 +25,31 @@ import java.text.NumberFormat;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private TextView quantityTextView;
+    private int quantity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //init variables
+        quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
+        quantity = Integer.parseInt(quantityTextView.getText().toString());
     }
 
     /**
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        int numCoffees = 2;
-        display(numCoffees);
-        displayPrice(numCoffees * 2);
+        display(quantity);
+        displayPrice(quantity * 5);
     }
 
     /**
      * This method displays the given quantity value on the screen.
      */
     private void display(int number) {
-        TextView quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
         quantityTextView.setText("" + number);
     }
 
@@ -52,5 +59,15 @@ public class MainActivity extends AppCompatActivity {
     private void displayPrice(int number) {
         TextView priceTextView = (TextView) findViewById(R.id.price_text_view);
         priceTextView.setText(NumberFormat.getCurrencyInstance().format(number));
+    }
+
+    public void incQuantity(View view) {
+        quantity = quantity + 1;
+        display(quantity);
+    }
+
+    public void decQuantity(View view) {
+        quantity = (quantity) == 0 ? 0 : quantity-1;
+        display(quantity);
     }
 }
