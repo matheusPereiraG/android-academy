@@ -27,19 +27,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView quantityTextView;
     private int quantity;
 
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView textView = new TextView(this);
-        textView.setText("hello");
-        textView.setTextSize(40);
-        setContentView(textView);
+        setContentView(R.layout.activity_main);
 
         //init variables
-        /*quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
-        quantity = Integer.parseInt(quantityTextView.getText().toString());*/
-
-    }
+        quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
+        quantity = Integer.parseInt(quantityTextView.getText().toString());
+    }*/
 
     /**
      * This method is called when the order button is clicked.
