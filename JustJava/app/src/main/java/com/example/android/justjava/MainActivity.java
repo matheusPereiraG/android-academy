@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.text.NumberFormat;
 
 /**
@@ -27,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView quantityTextView;
     private int quantity;
-    private double pricePerCoffee = 5.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +40,12 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        String priceMessage = "Price $" + (quantity * pricePerCoffee);
-        priceMessage = priceMessage + "\nThank You!";
-        displayMessage(priceMessage);
+        int price = calculatePrice();
+        displayPrice(price);
+    }
+
+    private int calculatePrice() {
+        return quantity * 5;
     }
 
     /**
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method displays the given quantity value on the screen.
      */
-    private void display(int number) {
-        quantityTextView.setText("" + number);
+    private void displayQuantity() {
+        quantityTextView.setText(String.valueOf(quantity));
     }
 
     /**
@@ -73,11 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void incQuantity(View view) {
         quantity = quantity + 1;
-        display(quantity);
+        displayQuantity();
     }
 
     public void decQuantity(View view) {
         quantity = (quantity) == 0 ? 0 : quantity-1;
-        display(quantity);
+        displayQuantity();
     }
 }
