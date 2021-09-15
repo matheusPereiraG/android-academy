@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JustJava">
         <activity
+            android:name=".CookieActivity"
+            android:parentActivityName="com.example.android.justjava.MainActivity"
+            android:exported="true" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.justjava.MainActivity" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -8,13 +8,13 @@
 
 package com.example.android.justjava;
 
-
-import android.media.MediaPlayer;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView quantityTextView;
     private int quantity;
+    private Button cookieBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
         //init variables
         quantityTextView = findViewById(R.id.quantity_text_view);
         quantity = Integer.parseInt(quantityTextView.getText().toString());
+        cookieBtn = findViewById(R.id.btn_cookie);
+
+        cookieBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, CookieActivity.class);
+            startActivity(intent);
+        });
     }
 
     /**
