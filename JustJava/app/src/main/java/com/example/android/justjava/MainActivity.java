@@ -27,15 +27,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView quantityTextView;
     private int quantity;
 
-    /*@Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //init variables
-        quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
+        quantityTextView = findViewById(R.id.quantity_text_view);
         quantity = Integer.parseInt(quantityTextView.getText().toString());
-    }*/
+    }
 
     /**
      * This method is called when the order button is clicked.
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
      * This method displays the given text on the screen.
      */
     private void displayMessage(String message) {
-        TextView priceTextView = (TextView) findViewById(R.id.order_summary_text_view);
+        TextView priceTextView = findViewById(R.id.order_summary_text_view);
         priceTextView.setText(message);
     }
 
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
      * This method displays the given price on the screen.
      */
     private void displayPrice(int number) {
-        TextView priceTextView = (TextView) findViewById(R.id.order_summary_text_view);
+        TextView priceTextView = findViewById(R.id.order_summary_text_view);
         priceTextView.setText(NumberFormat.getCurrencyInstance().format(number));
     }
 
