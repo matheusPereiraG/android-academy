@@ -52,8 +52,18 @@ public class MainActivity extends AppCompatActivity {
         displayForTeamB();
     }
 
-    private void displayForTeamA(){
+    private void displayForTeamA() {
         pointsViewA.setText(String.valueOf(totalPointsA));
     }
-    private void displayForTeamB() { pointsViewB.setText(String.valueOf(totalPointsB));}
+
+    private void displayForTeamB() {
+        pointsViewB.setText(String.valueOf(totalPointsB));
+    }
+
+    public void resetScores(View view) {
+        totalPointsA = 0;
+        totalPointsB = 0;
+        displayForTeamA();
+        displayForTeamB();
+    }
 }
