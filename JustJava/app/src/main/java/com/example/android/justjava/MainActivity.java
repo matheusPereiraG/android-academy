@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private int quantity;
     private Button cookieBtn;
     private CheckBox whippedCream;
+    private CheckBox chocolate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         quantity = Integer.parseInt(quantityTextView.getText().toString());
         cookieBtn = findViewById(R.id.btn_cookie);
         whippedCream = findViewById(R.id.whipped_cream_checkbox);
+        chocolate = findViewById(R.id.chocolate_checkbox);
 
         cookieBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, CookieActivity.class);
@@ -53,14 +55,17 @@ public class MainActivity extends AppCompatActivity {
     public void submitOrder(View view) {
         int price = calculatePrice();
         boolean hasWhippedCream = whippedCream.isChecked();
-        String message = createOrderSummary(price, hasWhippedCream);
+        boolean hasChocolate = chocolate.isChecked();
+        String message = createOrderSummary(price, hasWhippedCream, hasChocolate);
         displayMessage(message);
     }
 
-    private String createOrderSummary(int price, boolean hasWhippedCream) {
+    private String createOrderSummary(int price, boolean hasWhippedCream, boolean hasChocolate) {
         return "Matheus Gonçalves"
                 + "\nAdd whipped cream? "
                 + (hasWhippedCream ? "true" : "false")
+                + "\nAdd chocolate? "
+                + (hasChocolate ? "true" : "false")
                 + "\nQuantity: " + quantity
                 + "\nTotal: $" + price
                 + "\nThank you!";
