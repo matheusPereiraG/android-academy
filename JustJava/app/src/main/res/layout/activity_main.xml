@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Toppings"
-            android:textAllCaps="true" />
+            style="@style/HeaderTextStyle"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/quantity_text_view"
-            android:textAllCaps="true" />
+            style="@style/HeaderTextStyle" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -111,13 +111,13 @@
         </LinearLayout>
 
 
-        <TextView
+        <!--<TextView
             android:id="@+id/summary_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/summary_text_view"
-            android:textAllCaps="true" />
+            android:textAllCaps="true" /> -->
 
 
         <!--<TextView
