@@ -8,7 +8,11 @@
 
 package com.example.android.justjava;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
         boolean hasChocolate = chocolate.isChecked();
         int price = calculatePrice(hasWhippedCream, hasChocolate);
         String name = nameHolder.getText().toString();
-        String message = createOrderSummary(price, hasWhippedCream, hasChocolate,name);
-        displayMessage(message);
+        String messageBody = createOrderSummary(price, hasWhippedCream, hasChocolate,name);
+        String subject = getApplicationName(this) + " order for " + name;
+        composeEmail(subject, messageBody);
     }
 
     private String createOrderSummary(int price, boolean hasWhippedCream, boolean hasChocolate, String name) {
@@ -81,12 +86,15 @@ public class MainActivity extends AppCompatActivity {
                 + (hasChocolate ? quantity * 2 : 0);
     }
 
-    /**
-     * This method displays the given text on the screen.
-     */
-    private void displayMessage(String message) {
-        TextView priceTextView = findViewById(R.id.order_summary_text_view);
-        priceTextView.setText(message);
+    public void composeEmail(String subject, String messageBody) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        //intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_TEXT, messageBody);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     /**
@@ -96,21 +104,19 @@ public class MainActivity extends AppCompatActivity {
         quantityTextView.setText(String.valueOf(quantity));
     }
 
-    /**
-     * This method displays the given price on the screen.
-     */
-    private void displayPrice(int number) {
-        TextView priceTextView = findViewById(R.id.order_summary_text_view);
-        priceTextView.setText(NumberFormat.getCurrencyInstance().format(number));
-    }
-
     public void incQuantity(View view) {
-        quantity += 1;
+        quantity = quantity < 100 ? quantity +1 : quantity;
         displayQuantity();
     }
 
     public void decQuantity(View view) {
-        quantity = (quantity) == 0 ? 0 : quantity - 1;
+        quantity = (quantity) == 1 ? 1 : quantity - 1;
         displayQuantity();
+    }
+
+    public static String getApplicationName(Context context) {
+        ApplicationInfo applicationInfo = context.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
     }
 }
