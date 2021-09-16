@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView quantityTextView;
     private int quantity;
     private Button cookieBtn;
+    private CheckBox whippedCream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         quantityTextView = findViewById(R.id.quantity_text_view);
         quantity = Integer.parseInt(quantityTextView.getText().toString());
         cookieBtn = findViewById(R.id.btn_cookie);
+        whippedCream = findViewById(R.id.whipped_cream_checkbox);
 
         cookieBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, CookieActivity.class);
@@ -49,12 +52,18 @@ public class MainActivity extends AppCompatActivity {
      */
     public void submitOrder(View view) {
         int price = calculatePrice();
-        String message = createOrderSummary(price);
+        boolean hasWhippedCream = whippedCream.isChecked();
+        String message = createOrderSummary(price, hasWhippedCream);
         displayMessage(message);
     }
 
-    private String createOrderSummary(int price) {
-        return "Matheus Gonçalves\nQuantity: " + quantity + "\nTotal: $" + price + "\nThank you!" ;
+    private String createOrderSummary(int price, boolean hasWhippedCream) {
+        return "Matheus Gonçalves"
+                + "\nAdd whipped cream? "
+                + (hasWhippedCream ? "true" : "false")
+                + "\nQuantity: " + quantity
+                + "\nTotal: $" + price
+                + "\nThank you!" ;
     }
 
     private int calculatePrice() {
