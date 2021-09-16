@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 + (hasWhippedCream ? "true" : "false")
                 + "\nQuantity: " + quantity
                 + "\nTotal: $" + price
-                + "\nThank you!" ;
+                + "\nThank you!";
     }
 
     private int calculatePrice() {
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void decQuantity(View view) {
-        quantity = (quantity) == 0 ? 0 : quantity-1;
+        quantity = (quantity) == 0 ? 0 : quantity - 1;
         displayQuantity();
     }
 }
