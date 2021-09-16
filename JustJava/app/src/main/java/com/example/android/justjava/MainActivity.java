@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        int price = calculatePrice();
         boolean hasWhippedCream = whippedCream.isChecked();
         boolean hasChocolate = chocolate.isChecked();
+        int price = calculatePrice(hasWhippedCream, hasChocolate);
         String name = nameHolder.getText().toString();
         String message = createOrderSummary(price, hasWhippedCream, hasChocolate,name);
         displayMessage(message);
@@ -75,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
                 + "\nThank you!";
     }
 
-    private int calculatePrice() {
-        return quantity * 5;
+    private int calculatePrice(boolean hasWhippedCream, boolean hasChocolate) {
+        return quantity * 5
+                + (hasWhippedCream ? quantity : 0)
+                + (hasChocolate ? quantity * 2 : 0);
     }
 
     /**
