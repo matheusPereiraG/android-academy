@@ -18,7 +18,6 @@ public class MainActivityViewModel extends ViewModel {
             productRepository = ProductsRepo.getInstance();
             mProducts = productRepository.getProducts();
         }
-
     }
 
     public LiveData<List<Product>> getProducts(){

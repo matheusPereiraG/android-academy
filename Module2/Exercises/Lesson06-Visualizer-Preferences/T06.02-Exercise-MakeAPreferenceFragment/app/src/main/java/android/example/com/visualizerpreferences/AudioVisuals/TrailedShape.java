@@ -19,8 +19,7 @@ package android.example.com.visualizerpreferences.AudioVisuals;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-
-import androidx.annotation.ColorInt;
+import android.support.annotation.ColorInt;
 
 import java.util.LinkedList;
 

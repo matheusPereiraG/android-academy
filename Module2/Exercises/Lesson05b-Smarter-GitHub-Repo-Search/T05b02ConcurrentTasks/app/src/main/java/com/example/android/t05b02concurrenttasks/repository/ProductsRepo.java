@@ -34,6 +34,7 @@ public class ProductsRepo {
     }
 
     private void initProducts(){
+        //TODO: Test delay
         products.add(new Product("Apple", 12.3));
         products.add(new Product("Peach", 63));
         products.add(new Product("Orange", 45));
