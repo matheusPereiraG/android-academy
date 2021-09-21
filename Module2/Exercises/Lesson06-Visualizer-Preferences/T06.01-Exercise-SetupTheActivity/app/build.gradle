@@ -21,4 +21,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:25.4.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+
+    def preference_version = "1.1.1"
+
+    // Java language implementation
+    implementation "androidx.preference:preference:$preference_version"
+
 }
