@@ -354,4 +354,10 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.v(this.getClass().getSimpleName(), "NEW INTENT");
+    }
 }
