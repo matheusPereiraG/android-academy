@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +15,8 @@
 -->
 <!-- This layout defines the main screen and will display the list of weather or an error -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       - This RecyclerView will be responsible for displaying our list of weather data. All of  -
@@ -37,17 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"/>
-
-    <!-- TODO (38) Remove this error message TextView -->
-    <TextView
-        android:id="@+id/tv_error_message_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="@string/error_message"
-        android:textSize="20sp"
-        android:visibility="invisible" />
+        android:paddingBottom="8dp" />
 
     <!-- A progress bar that will be shown to users to indicate that weather data is loading -->
     <ProgressBar
