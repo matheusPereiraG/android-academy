@@ -29,8 +29,7 @@ public class WaterReminderIntentService extends IntentService {
     public WaterReminderIntentService(){
         super("WaterReminderIntentService");
     }
-
-
+    
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         String action = intent.getAction();
