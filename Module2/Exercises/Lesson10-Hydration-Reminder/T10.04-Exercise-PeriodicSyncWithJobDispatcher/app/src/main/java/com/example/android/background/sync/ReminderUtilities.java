@@ -17,6 +17,15 @@ package com.example.android.background.sync;
 
 
 import android.content.Context;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+import androidx.work.Configuration;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -29,29 +38,24 @@ import com.firebase.jobdispatcher.Trigger;
 import java.util.concurrent.TimeUnit;
 
 public class ReminderUtilities {
-    private static final int REMINDER_INTERVAL_MINUTES = 15;
-    private static final int REMINDER_INTERVAL_SECONDS = (int) (TimeUnit.MINUTES.toSeconds(REMINDER_INTERVAL_MINUTES));
-    private static final int SYNC_FLEXTIME_SECONDS = REMINDER_INTERVAL_SECONDS;
+    private static final int REMINDER_INTERVAL_SECONDS = 15;
 
     private static final String REMINDER_JOB_TAG = "hydration_reminder_tag";
 
     private static boolean sInitialized;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     synchronized public static void scheduleChargingReminder(Context context){
         if(sInitialized) return;
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
-        Job reminderJob = dispatcher.newJobBuilder()
-                .setService(WaterReminderFirebaseJobService.class)
-                .setTag(REMINDER_JOB_TAG)
-                .setConstraints(Constraint.DEVICE_CHARGING)
-                .setLifetime(Lifetime.FOREVER)
-                .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(REMINDER_INTERVAL_MINUTES,REMINDER_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
-                .setReplaceCurrent(true)
+
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
+                WaterReminderFirebaseJobService.class, REMINDER_INTERVAL_SECONDS, TimeUnit.MINUTES)
                 .build();
 
-        dispatcher.schedule(reminderJob);
+        Log.v(context.getClass().getSimpleName(), "ENQUEUING WORKER");
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(REMINDER_JOB_TAG, ExistingPeriodicWorkPolicy.KEEP, request);
+
         sInitialized = true;
     }
 }

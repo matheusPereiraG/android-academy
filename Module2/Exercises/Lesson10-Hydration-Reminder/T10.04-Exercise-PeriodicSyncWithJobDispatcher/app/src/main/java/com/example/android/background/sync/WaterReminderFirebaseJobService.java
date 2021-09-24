@@ -14,47 +14,49 @@
  * limitations under the License.
  */
 package com.example.android.background.sync;
-
-import android.annotation.SuppressLint;
-import android.app.job.JobParameters;
-import android.app.job.JobService;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.work.ListenableWorker;
+import androidx.work.WorkerParameters;
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class WaterReminderFirebaseJobService extends JobService {
+import com.google.common.util.concurrent.ListenableFuture;
 
+public class WaterReminderFirebaseJobService extends ListenableWorker {
 
     private AsyncTask mBackgroundTask;
 
+    public WaterReminderFirebaseJobService(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
+    }
+
+    @NonNull
     @Override
-    public boolean onStartJob(final JobParameters jobParameters) {
-
-
-        mBackgroundTask = new AsyncTask() {
+    public ListenableFuture<Result> startWork() {
+        /*mBackgroundTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                Context context = WaterReminderFirebaseJobService.this;
-                ReminderTasks.executeTask(context, ReminderTasks.ACTION_CHARGE_REMINDER_NOTIFICATION);
+                Log.d(this.getClass().getSimpleName(), "Im doing in the background");
+                ReminderTasks.executeTask(getApplicationContext(), ReminderTasks.ACTION_CHARGE_REMINDER_NOTIFICATION);
                 return null;
             }
 
             @Override
             protected void onPostExecute(Object o) {
-                jobFinished(jobParameters,false);
+                return;
             }
-        };
-        mBackgroundTask.execute();
-        return true;
+        };*/
+        //mBackgroundTask.execute();
+        Log.d(getApplicationContext().getClass().getSimpleName(), "Executing...");
+        ReminderTasks.executeTask(getApplicationContext(), ReminderTasks.ACTION_CHARGE_REMINDER_NOTIFICATION);
+        return (ListenableFuture<Result>) Result.success();
     }
 
     @Override
-    public boolean onStopJob(JobParameters jobParameters) {
-        if(mBackgroundTask != null) mBackgroundTask.cancel(true);
-        return true;
+    public void onStopped() {
+        super.onStopped();
+        //if(mBackgroundTask != null) mBackgroundTask.cancel(true);
     }
-
 }
