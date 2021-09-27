@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-class SunshineSyncIntentService extends IntentService{
+public class SunshineSyncIntentService extends IntentService{
 
     public SunshineSyncIntentService() {
         super("SunshineSyncIntentService");
