@@ -73,5 +73,5 @@ public class MainActivity extends AppCompatActivity {
 
         mBinding.textViewBoardingInCountdown.setText(hoursAndMinUntilBoard);
     }
-}
+} 
 
