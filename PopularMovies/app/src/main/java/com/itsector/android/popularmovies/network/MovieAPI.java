@@ -13,8 +13,8 @@ import retrofit2.http.Query;
 
 public interface MovieAPI {
     @GET("3/movie/top_rated")
-    Call<MovieCollection> getTopRatedMovies();
+    Call<MovieCollection> getTopRatedMovies(@Query("page") int page);
 
     @GET("3/movie/popular")
-    Call<MovieCollection> getPopularMovies();
+    Call<MovieCollection> getPopularMovies(@Query("page") int page);
 }

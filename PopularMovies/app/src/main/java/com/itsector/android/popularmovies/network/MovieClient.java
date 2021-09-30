@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -50,7 +51,7 @@ public class MovieClient {
     }
 
     public MutableLiveData<List<Movie>> getTopRatedMovies(){
-        Call<MovieCollection> call = service.getPopularMovies();
+        Call<MovieCollection> call = service.getPopularMovies(1);
         call.enqueue(new Callback<MovieCollection>() {
             @Override
             public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
@@ -58,8 +59,14 @@ public class MovieClient {
                     //TODO: Handle error codes
                 }
                 else {
-                    response.body().getResults().forEach((movie -> Log.v(this.getClass().getSimpleName(), movie.getOriginalTitle())));
-                    movies.setValue(response.body().getResults());
+                    List<Movie> results = new ArrayList<>();
+                    try{
+                        results = response.body().getResults();
+                    }
+                    catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                    movies.setValue(results);
                 }
             }
 
