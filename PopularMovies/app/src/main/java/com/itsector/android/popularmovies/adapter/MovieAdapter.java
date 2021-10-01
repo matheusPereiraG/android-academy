@@ -1,18 +1,37 @@
 package com.itsector.android.popularmovies.adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.itsector.android.popularmovies.R;
+import com.itsector.android.popularmovies.model.Movie;
+import com.itsector.android.popularmovies.network.GlideModule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     //TODO: List of movies field to show and manipulate
+
+    private Context mContext;
+    List<Movie> mMovieList;
+
+
+    public MovieAdapter(Context context) {
+        super();
+        mContext = context;
+        mMovieList = new ArrayList<>();
+    }
 
     @NonNull
     @Override
@@ -28,18 +47,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieViewHolder holder, int position) {
-        //TODO: Set the contents of an item to correspond to live data object
+        Movie m = mMovieList.get(position);
+        Uri uri = GlideModule.buildUri(m.getPosterPath());
+        Log.v(this.getClass().getSimpleName(), uri.toString());
+        Glide.with(mContext)
+                .load(uri)
+                .into(holder.mPoster);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mMovieList.size();
+    }
+
+    public void setMovieList(List<Movie> list){
+        mMovieList = list;
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
-        //TODO: Get references to views in movie_list_item
+        ImageView mPoster;
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
+            mPoster = itemView.findViewById(R.id.iv_poster);
         }
     }
 }

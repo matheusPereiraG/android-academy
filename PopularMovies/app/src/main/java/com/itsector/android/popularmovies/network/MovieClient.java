@@ -22,13 +22,11 @@ public class MovieClient {
     private static MovieClient instance;
 
     public static final String BASE_URL = "https://api.themoviedb.org/";
+    public static final String API_VERSION = "3";
     private Retrofit retrofit;
     private MovieAPI service;
-    private static MutableLiveData<List<Movie>> movies;
 
     private MovieClient() {
-        movies = new MutableLiveData<>();
-
         RequestInterceptor interceptor = new RequestInterceptor();
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -51,6 +49,7 @@ public class MovieClient {
     }
 
     public MutableLiveData<List<Movie>> getTopRatedMovies(){
+        MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
         Call<MovieCollection> call = service.getPopularMovies(1);
         call.enqueue(new Callback<MovieCollection>() {
             @Override
@@ -77,5 +76,4 @@ public class MovieClient {
         });
         return movies;
     }
-
 }
