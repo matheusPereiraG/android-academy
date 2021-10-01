@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -223,4 +225,12 @@ public class Movie implements Parcelable
         return  0;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof Movie)) return false;
+        if(!((Movie) obj).id.equals(this.id)) return false;
+        if(!((Movie) obj).originalTitle.equals(this.originalTitle)) return false;
+
+        return true;
+    }
 }

@@ -6,18 +6,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.ListPreloader;
-import com.bumptech.glide.util.FixedPreloadSizeProvider;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.MovieAdapter;
-import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.viewmodel.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,20 +28,24 @@ public class MainActivity extends AppCompatActivity {
 
         mRv = findViewById(R.id.rv_movies);
         mMovieAdapter = new MovieAdapter(this);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mRv.setAdapter(mMovieAdapter);
         mRv.setLayoutManager(layoutManager);
-        mRv.addOnScrollListener(new MainActivityViewModel.ScrollListener(layoutManager));
+
 
         mProgressBar = findViewById(R.id.progress_bar);
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        mainActivityViewModel.getMovieList().observe(this, movies -> {
-            mMovieAdapter.setMovieList(movies);
-            mMovieAdapter.notifyDataSetChanged();
+        mainActivityViewModel.getMovieCollection().observe(this, collection -> {
+            mMovieAdapter.addToMovieList(collection.getResults());
+            int moviePackSize = collection.getResults().size();
+            int startIndexNewMovies = collection.getPage() * moviePackSize - moviePackSize;
+            int itemCount = moviePackSize * collection.getPage();
+            mMovieAdapter.notifyItemRangeChanged(startIndexNewMovies, itemCount);
             mProgressBar.setVisibility(View.GONE);
         });
 
-
+        mRv.addOnScrollListener(new MainActivityViewModel.ScrollListener(layoutManager,
+                mainActivityViewModel));
     }
 }

@@ -1,35 +1,31 @@
 package com.itsector.android.popularmovies.viewmodel;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.itsector.android.popularmovies.model.Movie;
+import com.itsector.android.popularmovies.model.MovieCollection;
 import com.itsector.android.popularmovies.network.MovieClient;
-
-import java.util.List;
 
 public class MainActivityViewModel extends ViewModel {
 
     //TODO: Get data to show on the view, invoke MovieClient
 
-    public MutableLiveData<List<Movie>> mMovieList;
+    private MutableLiveData<MovieCollection> mMovieCol;
 
-    public MutableLiveData<List<Movie>> getMovieList(){
-        if (mMovieList == null) {
-            mMovieList = new MutableLiveData<>();
-            loadTopRatedMovies();
-        }
-        return mMovieList;
+    public void loadPopularMovies() {
+        MovieClient.getInstance().getPopularMovies(mMovieCol);
     }
 
-    private void loadTopRatedMovies() {
-        mMovieList = MovieClient.getInstance().getTopRatedMovies();
+    public MutableLiveData<MovieCollection> getMovieCollection(){
+        if(mMovieCol == null){
+            mMovieCol = new MutableLiveData<MovieCollection>();
+            //TODO: Get settings
+            loadPopularMovies();
+        }
+        return mMovieCol;
     }
 
 
@@ -37,10 +33,12 @@ public class MainActivityViewModel extends ViewModel {
         private boolean loading = true;
         int pastVisiblesItems, visibleItemCount, totalItemCount;
         private GridLayoutManager mLayoutManager;
+        private MainActivityViewModel mViewModel;
 
-        public ScrollListener(GridLayoutManager layoutManager) {
+        public ScrollListener(GridLayoutManager layoutManager, MainActivityViewModel model) {
             super();
             this.mLayoutManager = layoutManager;
+            this.mViewModel = model;
         }
 
         @Override
@@ -54,9 +52,8 @@ public class MainActivityViewModel extends ViewModel {
                 if (loading) {
                     if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                         loading = false;
-                        Log.v("...", "Last Item Wow !");
-                        // Do pagination.. i.e. fetch new data
-
+                        MovieClient.CURRENT_PAGE += 1;
+                        mViewModel.loadPopularMovies();
                         loading = true;
                     }
                 }
