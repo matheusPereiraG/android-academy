@@ -13,16 +13,16 @@ public class MovieCollection implements Parcelable
 
     @SerializedName("page")
     @Expose
-    private Long page;
+    private int page;
     @SerializedName("results")
     @Expose
     private List<Movie> movies = new ArrayList<Movie>();
     @SerializedName("total_pages")
     @Expose
-    private Long totalPages;
+    private int totalPages;
     @SerializedName("total_results")
     @Expose
-    private Long totalResults;
+    private int totalResults;
     public final static Creator<MovieCollection> CREATOR = new Creator<MovieCollection>() {
 
 
@@ -41,20 +41,20 @@ public class MovieCollection implements Parcelable
     ;
 
     protected MovieCollection(android.os.Parcel in) {
-        this.page = ((Long) in.readValue((Long.class.getClassLoader())));
+        this.page = ((int) in.readValue((int.class.getClassLoader())));
         in.readList(this.movies, (Movie.class.getClassLoader()));
-        this.totalPages = ((Long) in.readValue((Long.class.getClassLoader())));
-        this.totalResults = ((Long) in.readValue((Long.class.getClassLoader())));
+        this.totalPages = ((int) in.readValue((int.class.getClassLoader())));
+        this.totalResults = ((int) in.readValue((int.class.getClassLoader())));
     }
 
     public MovieCollection() {
     }
 
-    public Long getPage() {
+    public int getPage() {
         return page;
     }
 
-    public void setPage(Long page) {
+    public void setPage(int page) {
         this.page = page;
     }
 
@@ -66,19 +66,19 @@ public class MovieCollection implements Parcelable
         this.movies = movies;
     }
 
-    public Long getTotalPages() {
+    public int getTotalPages() {
         return totalPages;
     }
 
-    public void setTotalPages(Long totalPages) {
+    public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }
 
-    public Long getTotalResults() {
+    public int getTotalResults() {
         return totalResults;
     }
 
-    public void setTotalResults(Long totalResults) {
+    public void setTotalResults(int totalResults) {
         this.totalResults = totalResults;
     }
 

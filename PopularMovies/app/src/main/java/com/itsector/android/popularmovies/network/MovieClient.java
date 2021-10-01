@@ -4,11 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -22,13 +18,14 @@ public class MovieClient {
     private static MovieClient instance;
 
     public static final String BASE_URL = "https://api.themoviedb.org/";
+    public static final String API_VERSION = "3";
+    public static final String TAG= "MovieClient";
+    public static int CURRENT_PAGE = 1;
+    //TODO: Max pages?
     private Retrofit retrofit;
     private MovieAPI service;
-    private static MutableLiveData<List<Movie>> movies;
 
     private MovieClient() {
-        movies = new MutableLiveData<>();
-
         RequestInterceptor interceptor = new RequestInterceptor();
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -50,23 +47,24 @@ public class MovieClient {
         return instance;
     }
 
-    public MutableLiveData<List<Movie>> getTopRatedMovies(){
-        Call<MovieCollection> call = service.getPopularMovies(1);
+    public void getPopularMovies(MutableLiveData<MovieCollection> mMovieCol){
+        Call<MovieCollection> call = service.getPopularMovies(CURRENT_PAGE);
         call.enqueue(new Callback<MovieCollection>() {
             @Override
             public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
                 if(!response.isSuccessful()){
-                    //TODO: Handle error codes
+                    Log.e(TAG, String.valueOf(response.code()));
+                    Log.e(TAG, response.errorBody().toString());
                 }
                 else {
-                    List<Movie> results = new ArrayList<>();
+                    MovieCollection col;
                     try{
-                        results = response.body().getResults();
+                        col = response.body();
+                        mMovieCol.setValue(col);
                     }
                     catch(NullPointerException e){
                         e.printStackTrace();
                     }
-                    movies.setValue(results);
                 }
             }
 
@@ -75,7 +73,5 @@ public class MovieClient {
                 t.printStackTrace();
             }
         });
-        return movies;
     }
-
 }
