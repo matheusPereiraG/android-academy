@@ -57,10 +57,55 @@ public class MovieClient {
                     Log.e(TAG, response.errorBody().toString());
                 }
                 else {
-                    MovieCollection col;
+                    MovieCollection newCol;
+                    MovieCollection oldCol;
                     try{
-                        col = response.body();
-                        mMovieCol.setValue(col);
+                        newCol = response.body();
+                        newCol.setCollectionType("popular");
+                        oldCol = mMovieCol.getValue();
+                        if(oldCol == null)
+                            mMovieCol.setValue(newCol);
+                        else{
+                            oldCol.mergeMovieCollection(newCol);
+                            mMovieCol.setValue(oldCol);
+                        }
+
+                    }
+                    catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieCollection> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void getTopRatedMovies(MutableLiveData<MovieCollection> mMovieCol) {
+        Call<MovieCollection> call = service.getTopRatedMovies(CURRENT_PAGE);
+        call.enqueue(new Callback<MovieCollection>() {
+            @Override
+            public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
+                if(!response.isSuccessful()){
+                    Log.e(TAG, String.valueOf(response.code()));
+                    Log.e(TAG, response.errorBody().toString());
+                }
+                else {
+                    MovieCollection newCol;
+                    MovieCollection oldCol;
+                    try{
+                        newCol = response.body();
+                        newCol.setCollectionType("top_rated");
+                        oldCol = mMovieCol.getValue();
+                        if(oldCol == null)
+                            mMovieCol.setValue(newCol);
+                        else{
+                            oldCol.mergeMovieCollection(newCol);
+                            mMovieCol.setValue(oldCol);
+                        }
                     }
                     catch(NullPointerException e){
                         e.printStackTrace();

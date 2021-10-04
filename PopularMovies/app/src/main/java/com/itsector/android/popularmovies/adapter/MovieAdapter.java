@@ -78,13 +78,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return mMovieList.size();
     }
 
-    public void setMovieList(List<Movie> list){
-        if(list != null)
-            mMovieList = list;
-    }
-
-    public void addToMovieList(List<Movie> newMovieList) {
-        mMovieList.addAll(newMovieList);
+    public void setMoviesList(List<Movie> results) {
+        mMovieList = results;
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {

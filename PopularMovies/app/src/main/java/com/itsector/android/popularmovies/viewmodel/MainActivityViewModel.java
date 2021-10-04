@@ -14,18 +14,34 @@ public class MainActivityViewModel extends ViewModel {
     //TODO: Get data to show on the view, invoke MovieClient
 
     private MutableLiveData<MovieCollection> mMovieCol;
+    private int mSelectedSortOption;
 
     public void loadPopularMovies() {
         MovieClient.getInstance().getPopularMovies(mMovieCol);
     }
 
-    public MutableLiveData<MovieCollection> getMovieCollection(){
-        if(mMovieCol == null){
+    public void loadTopRatedMovies() {
+        MovieClient.getInstance().getTopRatedMovies(mMovieCol);
+    }
+
+    public MutableLiveData<MovieCollection> getMovieCollection() {
+        if (mMovieCol == null) {
             mMovieCol = new MutableLiveData<MovieCollection>();
             //TODO: Get settings
-            loadPopularMovies();
+            loadMovies();
         }
         return mMovieCol;
+    }
+
+    public void loadMovies(){
+        if(mSelectedSortOption == 0)
+            loadPopularMovies();
+        if(mSelectedSortOption == 1)
+            loadTopRatedMovies();
+    }
+
+    public void setSelectedSortOption(int option){
+        this.mSelectedSortOption = option;
     }
 
 
@@ -53,7 +69,7 @@ public class MainActivityViewModel extends ViewModel {
                     if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                         loading = false;
                         MovieClient.CURRENT_PAGE += 1;
-                        mViewModel.loadPopularMovies();
+                        mViewModel.loadMovies();
                         loading = true;
                     }
                 }
