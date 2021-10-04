@@ -85,7 +85,7 @@ public class Movie implements Parcelable
         this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.voteAverage = ((Long) in.readValue((Double.class.getClassLoader())));
+        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
         this.voteCount = ((Long) in.readValue((Long.class.getClassLoader())));
     }
 
