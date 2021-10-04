@@ -33,15 +33,19 @@ public class MainActivityViewModel extends ViewModel {
         return mMovieCol;
     }
 
-    public void loadMovies(){
-        if(mSelectedSortOption == 0)
+    public void loadMovies() {
+        if (mSelectedSortOption == 0)
             loadPopularMovies();
-        if(mSelectedSortOption == 1)
+        if (mSelectedSortOption == 1)
             loadTopRatedMovies();
     }
 
-    public void setSelectedSortOption(int option){
+    public void setSelectedSortOption(int option) {
         this.mSelectedSortOption = option;
+    }
+
+    public int getSelectedSortOption() {
+        return this.mSelectedSortOption;
     }
 
 

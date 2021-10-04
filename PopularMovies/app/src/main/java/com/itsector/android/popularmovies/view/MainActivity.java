@@ -46,11 +46,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        // get preferences for sort option
-        SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
-        int defaultValue = getResources().getInteger(R.integer.sort_by_default_key);
-        int sortOption = pref.getInt(getString(R.string.preference_sort_key), defaultValue);
 
+        int sortOption = getSavedPreference();
         Log.v(this.getClass().getSimpleName(), "SORT OPTION: " + sortOption);
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
@@ -77,37 +74,74 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.sort_by_popular) {
-            item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
-            MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_top);
-            otherOption.setIcon(0);
+            if (mainActivityViewModel.getSelectedSortOption() != 0) {
+                item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
+                MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_top);
+                otherOption.setIcon(0);
+                mRv.smoothScrollToPosition(0);
+                mLayoutManager.scrollToPositionWithOffset(0, 0);
 
-            mRv.smoothScrollToPosition(0);
-            mLayoutManager.scrollToPositionWithOffset(0,0);
+                MovieClient.CURRENT_PAGE = 1;
+                mainActivityViewModel.setSelectedSortOption(0);
+                mainActivityViewModel.loadMovies();
+                savePreference(0);
+            }
 
-            MovieClient.CURRENT_PAGE = 1;
-            mainActivityViewModel.setSelectedSortOption(0);
-            mainActivityViewModel.loadMovies();
         }
         if (item.getItemId() == R.id.sort_by_top) {
-            item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
-            MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_popular);
-            otherOption.setIcon(0);
+            if (mainActivityViewModel.getSelectedSortOption() != 1) {
+                item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
+                MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_popular);
+                otherOption.setIcon(0);
+                mRv.smoothScrollToPosition(0);
+                mLayoutManager.scrollToPositionWithOffset(0, 0);
 
-            mRv.smoothScrollToPosition(0);
-            mLayoutManager.scrollToPositionWithOffset(0,0);
-
-            MovieClient.CURRENT_PAGE = 1;
-            mainActivityViewModel.setSelectedSortOption(1);
-            mainActivityViewModel.loadMovies();
+                MovieClient.CURRENT_PAGE = 1;
+                mainActivityViewModel.setSelectedSortOption(1);
+                mainActivityViewModel.loadMovies();
+                savePreference(1);
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Function that saves preferable sorting option
+     *
+     * @param preferenceValue (0 for popular movies, 1 for top rated)
+     */
+    private void savePreference(int preferenceValue) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.preference_sort_key), preferenceValue);
+        editor.apply();
+    }
+
+    private int getSavedPreference() {
+        SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+        int defaultValue = getResources().getInteger(R.integer.sort_by_default_key);
+        return pref.getInt(getString(R.string.preference_sort_key), defaultValue);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        int prefOption = getSavedPreference();
         mMenu = menu;
+        if(prefOption == 0){
+            MenuItem item = mMenu.findItem(R.id.sort_by_popular);
+            item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
+            MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_top);
+            otherOption.setIcon(0);
+        }
+        else {
+            MenuItem item = mMenu.findItem(R.id.sort_by_top);
+            item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
+            MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_popular);
+            otherOption.setIcon(0);
+        }
+
         return true;
     }
 }
