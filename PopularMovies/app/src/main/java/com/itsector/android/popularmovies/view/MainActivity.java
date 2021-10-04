@@ -1,12 +1,18 @@
 package com.itsector.android.popularmovies.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -18,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter mMovieAdapter;
     private MainActivityViewModel mainActivityViewModel;
     private RecyclerView mRv;
+    private Menu mMenu;
     private ProgressBar mProgressBar;
 
 
@@ -47,5 +54,30 @@ public class MainActivity extends AppCompatActivity {
 
         mRv.addOnScrollListener(new MainActivityViewModel.ScrollListener(layoutManager,
                 mainActivityViewModel));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.sort_by_popular){
+            item.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_sort_by_check));
+            MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_top);
+            otherOption.setIcon(0);
+        }
+        if(item.getItemId() == R.id.sort_by_top){
+            item.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_sort_by_check));
+            MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_popular);
+            otherOption.setIcon(0);
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        mMenu = menu;
+        return true;
     }
 }
