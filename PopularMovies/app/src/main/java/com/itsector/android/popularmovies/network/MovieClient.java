@@ -134,7 +134,6 @@ public class MovieClient {
                     Movie movieDetails;
                     try{
                         movieDetails = response.body();
-                        Log.v(this.getClass().getSimpleName(), String.valueOf(movieDetails.getRuntime()));
                         mMovieDetails.setValue(movieDetails);
                     }
                     catch(NullPointerException e){
