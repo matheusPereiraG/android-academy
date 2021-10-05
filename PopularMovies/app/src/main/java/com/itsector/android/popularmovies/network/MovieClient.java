@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
 
 import okhttp3.OkHttpClient;
@@ -115,6 +116,35 @@ public class MovieClient {
 
             @Override
             public void onFailure(Call<MovieCollection> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void getMovieDetails(MutableLiveData<Movie> mMovieDetails, int id) {
+        Call<Movie> call = service.getMovieDetails(id);
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                if(!response.isSuccessful()){
+                    Log.e(TAG, String.valueOf(response.code()));
+                    Log.e(TAG, response.errorBody().toString());
+                }
+                else {
+                    Movie movieDetails;
+                    try{
+                        movieDetails = response.body();
+                        Log.v(this.getClass().getSimpleName(), String.valueOf(movieDetails.getRuntime()));
+                        mMovieDetails.setValue(movieDetails);
+                    }
+                    catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
                 t.printStackTrace();
             }
         });

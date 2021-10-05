@@ -25,6 +25,8 @@ public class RequestInterceptor implements Interceptor {
                 .addQueryParameter("api_key", BuildConfig.API_KEY)
                 .build();
 
+        Log.v("URL", url.toString());
+
         Request.Builder requestBuilder = original.newBuilder()
                 .url(url);
 

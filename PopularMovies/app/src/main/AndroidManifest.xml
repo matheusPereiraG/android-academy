@@ -14,7 +14,13 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".view.DetailActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="sensor"
+            android:parentActivityName="com.itsector.android.popularmovies.view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.itsector.android.popularmovies.view.MainActivity" />
+        </activity>
         <activity
             android:name=".view.MainActivity"
             android:exported="true">
