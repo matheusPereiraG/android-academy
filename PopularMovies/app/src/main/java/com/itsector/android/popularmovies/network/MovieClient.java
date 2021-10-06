@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
+import com.itsector.android.popularmovies.model.Trailer;
+import com.itsector.android.popularmovies.model.TrailerCollection;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -150,6 +152,34 @@ public class MovieClient {
 
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void getMovieTrailers(MutableLiveData<TrailerCollection> mMovieTrailers, int id) {
+        Call<TrailerCollection> call = service.getMovieTrailers(id);
+        call.enqueue(new Callback<TrailerCollection>() {
+            @Override
+            public void onResponse(Call<TrailerCollection> call, Response<TrailerCollection> response) {
+                if(!response.isSuccessful()){
+                    Log.e(TAG, String.valueOf(response.code()));
+                    Log.e(TAG, response.errorBody().toString());
+                }
+                else {
+                    TrailerCollection movieTrailers;
+                    try{
+                        movieTrailers = response.body();
+                        mMovieTrailers.setValue(movieTrailers);
+                    }
+                    catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TrailerCollection> call, Throwable t) {
                 t.printStackTrace();
             }
         });

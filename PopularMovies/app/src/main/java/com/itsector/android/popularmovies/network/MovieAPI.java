@@ -2,6 +2,7 @@ package com.itsector.android.popularmovies.network;
 
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
+import com.itsector.android.popularmovies.model.TrailerCollection;
 
 
 import retrofit2.Call;
@@ -20,4 +21,8 @@ public interface MovieAPI {
 
     @GET("3/movie/{movie_id}")
     Call<Movie> getMovieDetails(@Path("movie_id") int movieId);
+
+    @GET("3/movie/{movie_id}/videos")
+    Call<TrailerCollection> getMovieTrailers(@Path("movie_id") int movieId);
+
 }

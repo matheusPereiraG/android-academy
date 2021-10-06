@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.Target;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.databinding.ActivityDetailBinding;
 import com.itsector.android.popularmovies.model.Movie;
+import com.itsector.android.popularmovies.model.Trailer;
 import com.itsector.android.popularmovies.network.GlideModule;
 import com.itsector.android.popularmovies.viewmodel.DetailActivityViewModel;
 
@@ -64,6 +65,10 @@ public class DetailActivity extends AppCompatActivity {
         mViewModel.getMovieDetails().observe(this, movie -> {
             mDataBinding.movieDurationTv.setText(movie.getRuntime()+"min");
         });
+
+        mViewModel.getMovieTrailers().observe(this, trailerCollection -> {
+            trailerCollection.getResults().forEach(this::initTrailerFragment);
+        });
     }
 
     private void initViews() {
@@ -97,5 +102,19 @@ public class DetailActivity extends AppCompatActivity {
                 })
                 .fitCenter()
                 .into(mDataBinding.moviePosterIv);
+    }
+
+    private void initTrailerFragment(Trailer trailer) {
+        TrailerFragment trailerFrag = new TrailerFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Trailer", trailer);
+        trailerFrag.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.trailers_container, trailerFrag, null)
+                .commit();
+
     }
 }

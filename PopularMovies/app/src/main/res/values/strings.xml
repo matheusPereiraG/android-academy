@@ -6,4 +6,6 @@
     <string name="preference_sort_key">sort_key</string>
     <string name="trailer_label">Trailers:</string>
     <string name="detail_activity_label">MovieDetail</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
