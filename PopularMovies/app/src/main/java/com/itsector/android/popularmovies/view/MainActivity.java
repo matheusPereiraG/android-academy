@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModel() {
 
         int sortOption = getSavedPreference();
+        MovieClient.CURRENT_PAGE = 1;
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         mainActivityViewModel.setSelectedSortOption(sortOption);

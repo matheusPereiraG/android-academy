@@ -3,7 +3,6 @@ package com.itsector.android.popularmovies.network;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
 
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

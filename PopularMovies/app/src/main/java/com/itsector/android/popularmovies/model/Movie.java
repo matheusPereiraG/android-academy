@@ -2,6 +2,7 @@
 package com.itsector.android.popularmovies.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import android.os.Parcelable;
 
@@ -42,7 +43,7 @@ public class Movie implements Parcelable
     private String posterPath;
     @SerializedName("release_date")
     @Expose
-    private String releaseDate;
+    private Date releaseDate;
     @SerializedName("title")
     @Expose
     private String title;
@@ -85,7 +86,7 @@ public class Movie implements Parcelable
         this.overview = ((String) in.readValue((String.class.getClassLoader())));
         this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
         this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.releaseDate = ((Date) in.readValue((String.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
@@ -167,11 +168,11 @@ public class Movie implements Parcelable
         this.posterPath = posterPath;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 

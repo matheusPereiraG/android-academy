@@ -21,6 +21,9 @@ import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.network.GlideModule;
 import com.itsector.android.popularmovies.viewmodel.DetailActivityViewModel;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class DetailActivity extends AppCompatActivity {
 
     ActivityDetailBinding mDataBinding;
@@ -59,14 +62,19 @@ public class DetailActivity extends AppCompatActivity {
         mViewModel = new ViewModelProvider(this).get(DetailActivityViewModel.class);
         mViewModel.setMovie(mMovie);
         mViewModel.getMovieDetails().observe(this, movie -> {
-            mDataBinding.movieDurationTv.setText(movie.getRuntime()+"");
+            mDataBinding.movieDurationTv.setText(movie.getRuntime()+"min");
         });
     }
 
     private void initViews() {
         mDataBinding.movieTitleTv.setText(mMovie.getTitle());
         mDataBinding.ratingTv.setText(mMovie.getVoteAverage()+"/10");
-        mDataBinding.releaseYearTv.setText(mMovie.getReleaseDate());
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(mMovie.getReleaseDate());
+        int year = calendar.get(Calendar.YEAR);
+        mDataBinding.releaseYearTv.setText(String.valueOf(year));
+
         mDataBinding.synopsisTv.setText(mMovie.getOverview());
         String url = GlideModule.buildUri(mMovie.getPosterPath());
         Glide.with(this)
