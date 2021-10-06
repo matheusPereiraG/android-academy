@@ -1,6 +1,7 @@
 package com.itsector.android.popularmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.network.GlideModule;
+import com.itsector.android.popularmovies.view.DetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 })
                 .centerCrop()
                 .into(holder.mPoster);
+        holder.setMovie(m);
     }
 
     @Override
@@ -82,11 +85,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         mMovieList = results;
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView mPoster;
+        Movie mMovie;
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             mPoster = itemView.findViewById(R.id.iv_poster);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(mContext, DetailActivity.class);
+            intent.putExtra("Movie",mMovie);
+            mContext.startActivity(intent);
+        }
+
+        public void setMovie(Movie m) {
+            mMovie = m;
         }
     }
 }

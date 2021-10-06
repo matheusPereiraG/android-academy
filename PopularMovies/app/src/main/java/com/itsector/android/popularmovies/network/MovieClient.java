@@ -4,6 +4,9 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
 
 import okhttp3.OkHttpClient;
@@ -32,10 +35,14 @@ public class MovieClient {
         builder.interceptors().add(interceptor);
         OkHttpClient client = builder.build();
 
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd")
+                .create();
+
         this.retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         this.service = retrofit.create(MovieAPI.class);
@@ -115,6 +122,34 @@ public class MovieClient {
 
             @Override
             public void onFailure(Call<MovieCollection> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void getMovieDetails(MutableLiveData<Movie> mMovieDetails, int id) {
+        Call<Movie> call = service.getMovieDetails(id);
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                if(!response.isSuccessful()){
+                    Log.e(TAG, String.valueOf(response.code()));
+                    Log.e(TAG, response.errorBody().toString());
+                }
+                else {
+                    Movie movieDetails;
+                    try{
+                        movieDetails = response.body();
+                        mMovieDetails.setValue(movieDetails);
+                    }
+                    catch(NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
                 t.printStackTrace();
             }
         });

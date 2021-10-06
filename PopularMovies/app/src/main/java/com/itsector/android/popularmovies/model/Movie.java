@@ -2,6 +2,7 @@
 package com.itsector.android.popularmovies.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import android.os.Parcelable;
 
@@ -24,7 +25,7 @@ public class Movie implements Parcelable
     private List<Long> genreIds = new ArrayList<Long>();
     @SerializedName("id")
     @Expose
-    private Long id;
+    private int id;
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
@@ -42,7 +43,7 @@ public class Movie implements Parcelable
     private String posterPath;
     @SerializedName("release_date")
     @Expose
-    private String releaseDate;
+    private Date releaseDate;
     @SerializedName("title")
     @Expose
     private String title;
@@ -55,6 +56,9 @@ public class Movie implements Parcelable
     @SerializedName("vote_count")
     @Expose
     private Long voteCount;
+    @SerializedName("runtime")
+    @Expose
+    private int runtime;
     public final static Creator<Movie> CREATOR = new Creator<Movie>() {
 
 
@@ -76,16 +80,16 @@ public class Movie implements Parcelable
         this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.genreIds, (java.lang.Long.class.getClassLoader()));
-        this.id = ((Long) in.readValue((Long.class.getClassLoader())));
+        this.id = ((int) in.readValue((Long.class.getClassLoader())));
         this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
         this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
         this.overview = ((String) in.readValue((String.class.getClassLoader())));
         this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
         this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.releaseDate = ((Date) in.readValue((String.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.voteAverage = ((Long) in.readValue((Double.class.getClassLoader())));
+        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
         this.voteCount = ((Long) in.readValue((Long.class.getClassLoader())));
     }
 
@@ -116,11 +120,11 @@ public class Movie implements Parcelable
         this.genreIds = genreIds;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -164,11 +168,11 @@ public class Movie implements Parcelable
         this.posterPath = posterPath;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -225,12 +229,12 @@ public class Movie implements Parcelable
         return  0;
     }
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if(!(obj instanceof Movie)) return false;
-        if(!((Movie) obj).id.equals(this.id)) return false;
-        if(!((Movie) obj).originalTitle.equals(this.originalTitle)) return false;
 
-        return true;
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
     }
 }
