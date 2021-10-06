@@ -97,5 +97,20 @@ public class DetailActivity extends AppCompatActivity {
                 })
                 .fitCenter()
                 .into(mDataBinding.moviePosterIv);
+
+        initTrailerFragments();
+    }
+
+    private void initTrailerFragments() {
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.trailers_container, TrailerFragment.class, null)
+                .add(R.id.trailers_container, TrailerFragment.class, null)
+                .add(R.id.trailers_container, TrailerFragment.class, null)
+                .add(R.id.trailers_container, TrailerFragment.class, null)
+                .add(R.id.trailers_container, TrailerFragment.class, null)
+                .add(R.id.trailers_container, TrailerFragment.class, null)
+                .commit();
+
     }
 }

@@ -111,6 +111,18 @@
                 app:layout_constraintStart_toStartOf="@+id/synopsis_tv"
                 app:layout_constraintTop_toBottomOf="@+id/divider_view" />
 
+            <LinearLayout
+                android:id="@+id/trailers_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trailers_label_tv">
+
+            </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
