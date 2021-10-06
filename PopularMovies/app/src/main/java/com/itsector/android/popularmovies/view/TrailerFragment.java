@@ -63,7 +63,7 @@ public class TrailerFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if(mTrailer.getType().equals("Youtube"))
+        if(mTrailer.getSite().equals("YouTube"))
             launchYoutubeVideo();
     }
 
