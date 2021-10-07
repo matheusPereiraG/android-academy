@@ -53,10 +53,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         int pWidth = parent.getMeasuredWidth();
 
         if(mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            view.setLayoutParams(new ViewGroup.LayoutParams(pWidth /4, pHeight));
+            view.setLayoutParams(new ViewGroup.LayoutParams(pWidth /3, pHeight));
         }
         if(mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            view.setLayoutParams(new ViewGroup.LayoutParams(pWidth /2, pHeight/3));
+            view.setLayoutParams(new ViewGroup.LayoutParams(pWidth /2, pHeight/2));
         }
 
 

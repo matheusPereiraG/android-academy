@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mRv = findViewById(R.id.rv_movies);
         mMovieAdapter = new MovieAdapter(this);
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            mLayoutManager = new GridLayoutManager(this, 4);
+            mLayoutManager = new GridLayoutManager(this, 3);
         }
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             mLayoutManager = new GridLayoutManager(this, 2);
