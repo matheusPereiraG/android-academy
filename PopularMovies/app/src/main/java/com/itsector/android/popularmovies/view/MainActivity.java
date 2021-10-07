@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView() {
         mRv = findViewById(R.id.rv_movies);
         mMovieAdapter = new MovieAdapter(this);
-        mLayoutManager = new GridLayoutManager(this, 2);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            mLayoutManager = new GridLayoutManager(this, 4);
+        }
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            mLayoutManager = new GridLayoutManager(this, 2);
+        }
+
         mRv.setAdapter(mMovieAdapter);
         mRv.setLayoutManager(mLayoutManager);
 
