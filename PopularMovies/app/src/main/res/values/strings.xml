@@ -4,8 +4,11 @@
     <string name="sort_by_popular_title">Popular</string>
     <string name="sort_by_top">Top Rated</string>
     <string name="preference_sort_key">sort_key</string>
-    <string name="trailer_label">Trailers:</string>
+    <string name="trailer_label">Trailers</string>
     <string name="detail_activity_label">MovieDetail</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reviews_label">Reviews</string>
+    <string name="read_more">Read More</string>
+    <string name="show_less">Show less</string>
 </resources>

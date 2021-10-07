@@ -2,6 +2,7 @@ package com.itsector.android.popularmovies.network;
 
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
+import com.itsector.android.popularmovies.model.ReviewCollection;
 import com.itsector.android.popularmovies.model.TrailerCollection;
 
 
@@ -24,5 +25,10 @@ public interface MovieAPI {
 
     @GET("3/movie/{movie_id}/videos")
     Call<TrailerCollection> getMovieTrailers(@Path("movie_id") int movieId);
+
+    @GET("3/movie/{movie_id}/reviews")
+    Call<ReviewCollection> getMovieReviews(@Path("movie_id") int movieId, @Query("page") int page);
+
+
 
 }

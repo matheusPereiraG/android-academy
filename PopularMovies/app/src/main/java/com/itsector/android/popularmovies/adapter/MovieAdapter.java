@@ -2,6 +2,7 @@ package com.itsector.android.popularmovies.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +48,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
+
+        int pHeight = parent.getMeasuredHeight();
+        int pWidth = parent.getMeasuredWidth();
+
+        if(mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            view.setLayoutParams(new ViewGroup.LayoutParams(pWidth /3, pHeight));
+        }
+        if(mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            view.setLayoutParams(new ViewGroup.LayoutParams(pWidth /2, pHeight/2));
+        }
+
+
+
         return new MovieViewHolder(view);
     }
 
@@ -71,7 +86,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         return false;
                     }
                 })
-                .centerCrop()
                 .into(holder.mPoster);
         holder.setMovie(m);
     }
