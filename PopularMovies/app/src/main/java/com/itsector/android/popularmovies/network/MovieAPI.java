@@ -25,4 +25,9 @@ public interface MovieAPI {
     @GET("3/movie/{movie_id}/videos")
     Call<TrailerCollection> getMovieTrailers(@Path("movie_id") int movieId);
 
+    @GET("3/movie/{movie_id}/reviews")
+    Call<TrailerCollection> getMovieReviews(@Path("movie_id") int movieId, @Query("page") int page);
+
+
+
 }

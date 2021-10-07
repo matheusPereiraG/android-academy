@@ -5,10 +5,14 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -16,20 +20,24 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.itsector.android.popularmovies.R;
+import com.itsector.android.popularmovies.adapter.ReviewAdapter;
 import com.itsector.android.popularmovies.databinding.ActivityDetailBinding;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.Trailer;
 import com.itsector.android.popularmovies.network.GlideModule;
 import com.itsector.android.popularmovies.viewmodel.DetailActivityViewModel;
+import com.itsector.android.popularmovies.viewmodel.MainActivityViewModel;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     ActivityDetailBinding mDataBinding;
     DetailActivityViewModel mViewModel;
     Movie mMovie;
+    ReviewAdapter mReviewAdapter;
+    LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,10 @@ public class DetailActivity extends AppCompatActivity {
         mViewModel.getMovieTrailers().observe(this, trailerCollection -> {
             trailerCollection.getResults().forEach(this::initTrailerFragment);
         });
+
+        mViewModel.getMovieReviews().observe(this, reviewCollection -> {
+            Log.v("REVIEW COLLECTION", String.valueOf(reviewCollection.getPage()));
+        });
     }
 
     private void initViews() {
@@ -102,6 +114,19 @@ public class DetailActivity extends AppCompatActivity {
                 })
                 .fitCenter()
                 .into(mDataBinding.moviePosterIv);
+
+        //Init recycler view for reviews
+        mReviewAdapter = new ReviewAdapter(this);
+        mLayoutManager = new LinearLayoutManager(this);
+        mDataBinding.reviewsRv.setAdapter(mReviewAdapter);
+        mDataBinding.reviewsRv.setLayoutManager(mLayoutManager);
+        mDataBinding.reviewsRv.addOnScrollListener(new DetailActivityViewModel.ScrollListener(mLayoutManager,
+                mViewModel));
+
+        mDataBinding.reviewsRv.setNestedScrollingEnabled(false);
+
+        mDataBinding.reviewsBtn.setOnClickListener(this);
+        mDataBinding.trailersBtn.setOnClickListener(this);
     }
 
     private void initTrailerFragment(Trailer trailer) {
@@ -115,6 +140,19 @@ public class DetailActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .add(R.id.trailers_container, trailerFrag, null)
                 .commit();
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.reviews_btn){
+            mDataBinding.trailersContainer.setVisibility(View.GONE);
+            mDataBinding.reviewsRv.setVisibility(View.VISIBLE);
+        }
+        else if (view.getId() == R.id.trailers_btn){
+            mDataBinding.reviewsRv.setVisibility(View.GONE);
+            mDataBinding.trailersContainer.setVisibility(View.VISIBLE);
+        }
 
     }
 }

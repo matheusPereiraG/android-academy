@@ -184,4 +184,7 @@ public class MovieClient {
             }
         });
     }
+
+    public void getMovieReviews(MutableLiveData<TrailerCollection> mMovieTrailers, int id) {
+    }
 }
