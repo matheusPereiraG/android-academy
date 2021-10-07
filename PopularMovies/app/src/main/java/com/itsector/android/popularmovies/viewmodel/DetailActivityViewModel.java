@@ -49,7 +49,7 @@ public class DetailActivityViewModel extends ViewModel {
     }
 
     private void loadReviews() {
-        MovieClient.getInstance().getMovieReviews(mMovieTrailers, mMovie.getId());
+        MovieClient.getInstance().getMovieReviews(mMovieReviews, mMovie.getId());
     }
 
     private void loadDetails(){

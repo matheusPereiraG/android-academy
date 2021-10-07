@@ -79,6 +79,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         });
 
         mViewModel.getMovieReviews().observe(this, reviewCollection -> {
+            mReviewAdapter.setReviewList(reviewCollection.getResults());
+            mReviewAdapter.notifyDataSetChanged();
+            /*mReviewAdapter.notifyItemRangeChanged(collection.getNewMoviesStartIndex()
+                    , collection.getItemsSize());*/
             Log.v("REVIEW COLLECTION", String.valueOf(reviewCollection.getPage()));
         });
     }

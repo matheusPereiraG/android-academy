@@ -8,8 +8,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
+import com.itsector.android.popularmovies.model.Review;
+import com.itsector.android.popularmovies.model.ReviewCollection;
 import com.itsector.android.popularmovies.model.Trailer;
 import com.itsector.android.popularmovies.model.TrailerCollection;
+
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -24,8 +28,9 @@ public class MovieClient {
 
     public static final String BASE_URL = "https://api.themoviedb.org/";
     public static final String API_VERSION = "3";
-    public static final String TAG= "MovieClient";
+    public static final String TAG = "MovieClient";
     public static int CURRENT_PAGE = 1;
+    public static int ITEMS_PER_PAGE = 20;
     //TODO: Max pages?
     private Retrofit retrofit;
     private MovieAPI service;
@@ -50,37 +55,35 @@ public class MovieClient {
         this.service = retrofit.create(MovieAPI.class);
     }
 
-    public static synchronized MovieClient getInstance(){
-        if(instance == null)
+    public static synchronized MovieClient getInstance() {
+        if (instance == null)
             instance = new MovieClient();
         return instance;
     }
 
-    public void getPopularMovies(MutableLiveData<MovieCollection> mMovieCol){
+    public void getPopularMovies(MutableLiveData<MovieCollection> mMovieCol) {
         Call<MovieCollection> call = service.getPopularMovies(CURRENT_PAGE);
         call.enqueue(new Callback<MovieCollection>() {
             @Override
             public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.e(TAG, String.valueOf(response.code()));
                     Log.e(TAG, response.errorBody().toString());
-                }
-                else {
+                } else {
                     MovieCollection newCol;
                     MovieCollection oldCol;
-                    try{
+                    try {
                         newCol = response.body();
                         newCol.setCollectionType("popular");
                         oldCol = mMovieCol.getValue();
-                        if(oldCol == null)
+                        if (oldCol == null)
                             mMovieCol.setValue(newCol);
-                        else{
+                        else {
                             oldCol.mergeMovieCollection(newCol);
                             mMovieCol.setValue(oldCol);
                         }
 
-                    }
-                    catch(NullPointerException e){
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -98,25 +101,23 @@ public class MovieClient {
         call.enqueue(new Callback<MovieCollection>() {
             @Override
             public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.e(TAG, String.valueOf(response.code()));
                     Log.e(TAG, response.errorBody().toString());
-                }
-                else {
+                } else {
                     MovieCollection newCol;
                     MovieCollection oldCol;
-                    try{
+                    try {
                         newCol = response.body();
                         newCol.setCollectionType("top_rated");
                         oldCol = mMovieCol.getValue();
-                        if(oldCol == null)
+                        if (oldCol == null)
                             mMovieCol.setValue(newCol);
-                        else{
+                        else {
                             oldCol.mergeMovieCollection(newCol);
                             mMovieCol.setValue(oldCol);
                         }
-                    }
-                    catch(NullPointerException e){
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -134,17 +135,15 @@ public class MovieClient {
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.e(TAG, String.valueOf(response.code()));
                     Log.e(TAG, response.errorBody().toString());
-                }
-                else {
+                } else {
                     Movie movieDetails;
-                    try{
+                    try {
                         movieDetails = response.body();
                         mMovieDetails.setValue(movieDetails);
-                    }
-                    catch(NullPointerException e){
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -162,17 +161,15 @@ public class MovieClient {
         call.enqueue(new Callback<TrailerCollection>() {
             @Override
             public void onResponse(Call<TrailerCollection> call, Response<TrailerCollection> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.e(TAG, String.valueOf(response.code()));
                     Log.e(TAG, response.errorBody().toString());
-                }
-                else {
+                } else {
                     TrailerCollection movieTrailers;
-                    try{
+                    try {
                         movieTrailers = response.body();
                         mMovieTrailers.setValue(movieTrailers);
-                    }
-                    catch(NullPointerException e){
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -185,6 +182,49 @@ public class MovieClient {
         });
     }
 
-    public void getMovieReviews(MutableLiveData<TrailerCollection> mMovieTrailers, int id) {
+    public void getMovieReviews(MutableLiveData<ReviewCollection> mMovieReviews, int id) {
+        int nextPage = 1;
+        if (mMovieReviews.getValue() != null) {
+            nextPage = mMovieReviews.getValue().getResults().size() / ITEMS_PER_PAGE + 1;
+            if (nextPage > mMovieReviews.getValue().getTotalPages()) return;
+        }
+
+        Call<ReviewCollection> call = service.getMovieReviews(id, nextPage);
+        call.enqueue(new Callback<ReviewCollection>() {
+            @Override
+            public void onResponse(Call<ReviewCollection> call, Response<ReviewCollection> response) {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, String.valueOf(response.code()));
+                    Log.e(TAG, response.errorBody().toString());
+                } else {
+                    ReviewCollection movieReviews;
+                    try {
+                        movieReviews = response.body();
+                        mMovieReviews.setValue(mergeReviews(mMovieReviews.getValue(), movieReviews));
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewCollection> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private ReviewCollection mergeReviews(ReviewCollection oldR, ReviewCollection newR) {
+        if (oldR == null) return newR;
+
+        List<Review> tempList = oldR.getResults();
+        tempList.addAll(newR.getResults());
+        oldR.setResults(tempList);
+
+        oldR.setPage(newR.getPage());
+        oldR.setTotalPages(newR.getTotalPages());
+        oldR.setTotalResults(newR.getTotalResults());
+
+        return oldR;
     }
 }
