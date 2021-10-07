@@ -15,6 +15,8 @@ import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.Review;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
@@ -69,7 +71,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
         public void bind(Review r) {
             mAuthorTv.setText(r.getAuthor());
-            mCreatedAtTv.setText(r.getCreatedAt());
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(r.getCreatedAt());
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            mCreatedAtTv.setText(year + "-" + month + "-" + day);
             mReviewContent.setText(r.getContent());
         }
     }

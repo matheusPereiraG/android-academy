@@ -186,7 +186,10 @@ public class MovieClient {
         int nextPage = 1;
         if (mMovieReviews.getValue() != null) {
             nextPage = mMovieReviews.getValue().getResults().size() / ITEMS_PER_PAGE + 1;
-            if (nextPage > mMovieReviews.getValue().getTotalPages()) return;
+            if(mMovieReviews.getValue().getPage() == nextPage)
+                return;
+            if (nextPage > mMovieReviews.getValue().getTotalPages())
+                return;
         }
 
         Call<ReviewCollection> call = service.getMovieReviews(id, nextPage);

@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 public class Review implements Parcelable
 {
 
@@ -20,7 +22,7 @@ public class Review implements Parcelable
     private String content;
     @SerializedName("created_at")
     @Expose
-    private String createdAt;
+    private Date createdAt;
     @SerializedName("id")
     @Expose
     private String id;
@@ -51,7 +53,7 @@ public class Review implements Parcelable
         this.author = ((String) in.readValue((String.class.getClassLoader())));
         this.authorDetails = ((AuthorDetails) in.readValue((AuthorDetails.class.getClassLoader())));
         this.content = ((String) in.readValue((String.class.getClassLoader())));
-        this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
+        this.createdAt = ((Date) in.readValue((String.class.getClassLoader())));
         this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
@@ -84,11 +86,11 @@ public class Review implements Parcelable
         this.content = content;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

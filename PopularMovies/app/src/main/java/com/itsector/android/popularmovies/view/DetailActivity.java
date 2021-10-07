@@ -3,6 +3,7 @@ package com.itsector.android.popularmovies.view;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -59,8 +60,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         ActionBar ab = getSupportActionBar();
         try {
             ab.setTitle(R.string.detail_activity_label);
-        }
-        catch(NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -71,7 +71,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mViewModel = new ViewModelProvider(this).get(DetailActivityViewModel.class);
         mViewModel.setMovie(mMovie);
         mViewModel.getMovieDetails().observe(this, movie -> {
-            mDataBinding.movieDurationTv.setText(movie.getRuntime()+"min");
+            mDataBinding.movieDurationTv.setText(movie.getRuntime() + "min");
         });
 
         mViewModel.getMovieTrailers().observe(this, trailerCollection -> {
@@ -89,7 +89,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initViews() {
         mDataBinding.movieTitleTv.setText(mMovie.getTitle());
-        mDataBinding.ratingTv.setText(mMovie.getVoteAverage()+"/10");
+        mDataBinding.ratingTv.setText(mMovie.getVoteAverage() + "/10");
 
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(mMovie.getReleaseDate());
@@ -124,10 +124,21 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mLayoutManager = new LinearLayoutManager(this);
         mDataBinding.reviewsRv.setAdapter(mReviewAdapter);
         mDataBinding.reviewsRv.setLayoutManager(mLayoutManager);
-        mDataBinding.reviewsRv.addOnScrollListener(new DetailActivityViewModel.ScrollListener(mLayoutManager,
-                mViewModel));
 
         mDataBinding.reviewsRv.setNestedScrollingEnabled(false);
+        mDataBinding.detailNestedScroll.setOnScrollChangeListener(
+                (NestedScrollView.OnScrollChangeListener)
+                        (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                            if (v.getChildAt(v.getChildCount() - 1) != null) {
+                                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight()
+                                        - v.getMeasuredHeight())) &&
+                                        scrollY > oldScrollY) {
+                                    if (mDataBinding.reviewsRv.getVisibility() == View.VISIBLE) {
+                                        mViewModel.loadReviews();
+                                    }
+                                }
+                            }
+                        });
 
         mDataBinding.reviewsBtn.setOnClickListener(this);
         mDataBinding.trailersBtn.setOnClickListener(this);
@@ -149,11 +160,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.reviews_btn){
+        if (view.getId() == R.id.reviews_btn) {
             mDataBinding.trailersContainer.setVisibility(View.GONE);
             mDataBinding.reviewsRv.setVisibility(View.VISIBLE);
-        }
-        else if (view.getId() == R.id.trailers_btn){
+        } else if (view.getId() == R.id.trailers_btn) {
             mDataBinding.reviewsRv.setVisibility(View.GONE);
             mDataBinding.trailersContainer.setVisibility(View.VISIBLE);
         }
