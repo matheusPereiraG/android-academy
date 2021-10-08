@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,8 +19,7 @@ import android.widget.ProgressBar;
 
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.MovieAdapter;
-import com.itsector.android.popularmovies.model.Movie;
-import com.itsector.android.popularmovies.network.MovieClient;
+import com.itsector.android.popularmovies.database.Repository;
 import com.itsector.android.popularmovies.viewmodel.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModel() {
 
         int sortOption = getSavedPreference();
-        MovieClient.CURRENT_PAGE = 1;
+        Repository.CURRENT_PAGE = 1;
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         mainActivityViewModel.setSelectedSortOption(sortOption);
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 mRv.smoothScrollToPosition(0);
                 mLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                MovieClient.CURRENT_PAGE = 1;
+                Repository.CURRENT_PAGE = 1;
                 mainActivityViewModel.setSelectedSortOption(0);
                 mainActivityViewModel.loadMovies();
                 savePreference(0);
@@ -103,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 mRv.smoothScrollToPosition(0);
                 mLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                MovieClient.CURRENT_PAGE = 1;
+                Repository.CURRENT_PAGE = 1;
                 mainActivityViewModel.setSelectedSortOption(1);
                 mainActivityViewModel.loadMovies();
                 savePreference(1);

@@ -7,58 +7,83 @@ import java.util.List;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.itsector.android.popularmovies.utils.DateConverter;
 
+@Entity(tableName = "movie")
+@TypeConverters(DateConverter.class)
 public class Movie implements Parcelable
 {
-
-    @SerializedName("adult")
-    @Expose
-    private Boolean adult;
-    @SerializedName("backdrop_path")
-    @Expose
-    private String backdropPath;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Long> genreIds = new ArrayList<Long>();
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private int id;
+
+    @Ignore
+    @SerializedName("adult")
+    @Expose
+    private Boolean adult;
+
+    @Ignore
+    @SerializedName("backdrop_path")
+    @Expose
+    private String backdropPath;
+
+    @Ignore
+    @SerializedName("genre_ids")
+    @Expose
+    private List<Long> genreIds = new ArrayList<Long>();
+
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
+
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("popularity")
     @Expose
     private Double popularity;
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("release_date")
     @Expose
     private Date releaseDate;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("video")
     @Expose
     private Boolean video;
+
     @SerializedName("vote_average")
     @Expose
-    private double voteAverage;
+    private Double voteAverage;
+
     @SerializedName("vote_count")
     @Expose
     private Long voteCount;
+
     @SerializedName("runtime")
     @Expose
     private int runtime;
+
     public final static Creator<Movie> CREATOR = new Creator<Movie>() {
 
 

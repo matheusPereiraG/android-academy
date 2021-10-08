@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.itsector.android.popularmovies.model.MovieCollection;
-import com.itsector.android.popularmovies.network.MovieClient;
+import com.itsector.android.popularmovies.database.Repository;
 
 public class MainActivityViewModel extends ViewModel {
 
@@ -17,11 +17,11 @@ public class MainActivityViewModel extends ViewModel {
     private int mSelectedSortOption;
 
     public void loadPopularMovies() {
-        MovieClient.getInstance().getPopularMovies(mMovieCol);
+        Repository.getInstance().getPopularMovies(mMovieCol);
     }
 
     public void loadTopRatedMovies() {
-        MovieClient.getInstance().getTopRatedMovies(mMovieCol);
+        Repository.getInstance().getTopRatedMovies(mMovieCol);
     }
 
     public MutableLiveData<MovieCollection> getMovieCollection() {
@@ -72,7 +72,7 @@ public class MainActivityViewModel extends ViewModel {
                 if (loading) {
                     if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                         loading = false;
-                        MovieClient.CURRENT_PAGE += 1;
+                        Repository.CURRENT_PAGE += 1;
                         mViewModel.loadMovies();
                         loading = true;
                     }

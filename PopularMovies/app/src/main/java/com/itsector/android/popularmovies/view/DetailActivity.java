@@ -3,6 +3,7 @@ package com.itsector.android.popularmovies.view;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,6 +40,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     Movie mMovie;
     ReviewAdapter mReviewAdapter;
     LinearLayoutManager mLayoutManager;
+    boolean isFavBtnEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +144,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         mDataBinding.reviewsBtn.setOnClickListener(this);
         mDataBinding.trailersBtn.setOnClickListener(this);
+        mDataBinding.favoriteBtn.setOnClickListener(this);
     }
 
     private void initTrailerFragment(Trailer trailer) {
@@ -166,7 +169,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         } else if (view.getId() == R.id.trailers_btn) {
             mDataBinding.reviewsRv.setVisibility(View.GONE);
             mDataBinding.trailersContainer.setVisibility(View.VISIBLE);
+        } else if (view.getId() == R.id.favorite_btn) {
+            if (isFavBtnEnabled) {
+                mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_off));
+            } else {
+                mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_on));
+            }
+            isFavBtnEnabled = !isFavBtnEnabled;
         }
-
     }
 }

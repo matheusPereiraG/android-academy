@@ -1,5 +1,6 @@
-package com.itsector.android.popularmovies.network;
+package com.itsector.android.popularmovies.database;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -10,9 +11,11 @@ import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
 import com.itsector.android.popularmovies.model.Review;
 import com.itsector.android.popularmovies.model.ReviewCollection;
-import com.itsector.android.popularmovies.model.Trailer;
 import com.itsector.android.popularmovies.model.TrailerCollection;
+import com.itsector.android.popularmovies.network.MovieAPI;
+import com.itsector.android.popularmovies.network.RequestInterceptor;
 
+import java.text.DateFormat;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -22,20 +25,23 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MovieClient {
+public class Repository {
 
-    private static MovieClient instance;
+    private static Repository instance;
 
     public static final String BASE_URL = "https://api.themoviedb.org/";
-    public static final String API_VERSION = "3";
-    public static final String TAG = "MovieClient";
+    public static final String TAG = "Repository";
     public static int CURRENT_PAGE = 1;
     public static int ITEMS_PER_PAGE = 20;
     //TODO: Max pages?
     private Retrofit retrofit;
     private MovieAPI service;
 
-    private MovieClient() {
+    private Repository() {
+        initRetrofit();
+    }
+
+    private void initRetrofit() {
         RequestInterceptor interceptor = new RequestInterceptor();
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -43,7 +49,7 @@ public class MovieClient {
         OkHttpClient client = builder.build();
 
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
+                .setDateFormat(DateFormat.FULL, DateFormat.FULL)
                 .create();
 
         this.retrofit = new Retrofit.Builder()
@@ -55,12 +61,13 @@ public class MovieClient {
         this.service = retrofit.create(MovieAPI.class);
     }
 
-    public static synchronized MovieClient getInstance() {
+    public static synchronized Repository getInstance() {
         if (instance == null)
-            instance = new MovieClient();
+            instance = new Repository();
         return instance;
     }
 
+    /*                         Retrofit calls                                       */
     public void getPopularMovies(MutableLiveData<MovieCollection> mMovieCol) {
         Call<MovieCollection> call = service.getPopularMovies(CURRENT_PAGE);
         call.enqueue(new Callback<MovieCollection>() {
@@ -215,6 +222,19 @@ public class MovieClient {
                 t.printStackTrace();
             }
         });
+    }
+
+    /*                         Room calls                                       */
+    public void addFavorite(Context context, Movie toAdd){
+
+    }
+
+    public void deleteFavorite(Context context, Movie toDelete){
+
+    }
+
+    public void checkFavorite(MutableLiveData<Boolean> isFav, Movie toCheck){
+
     }
 
     private ReviewCollection mergeReviews(ReviewCollection oldR, ReviewCollection newR) {
