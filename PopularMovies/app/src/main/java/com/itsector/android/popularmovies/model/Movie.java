@@ -4,9 +4,9 @@ package com.itsector.android.popularmovies.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -17,12 +17,11 @@ import com.google.gson.annotations.SerializedName;
 import com.itsector.android.popularmovies.utils.DateConverter;
 
 @Entity(tableName = "movie")
-@TypeConverters(DateConverter.class)
-public class Movie implements Parcelable
-{
-    @PrimaryKey
+public class Movie implements Parcelable {
+
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
 
     @Ignore
@@ -61,6 +60,7 @@ public class Movie implements Parcelable
     private String posterPath;
 
     @SerializedName("release_date")
+    @TypeConverters(DateConverter.class)
     @Expose
     private Date releaseDate;
 
@@ -88,7 +88,7 @@ public class Movie implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Movie createFromParcel(android.os.Parcel in) {
             return new Movie(in);
@@ -98,8 +98,7 @@ public class Movie implements Parcelable
             return (new Movie[size]);
         }
 
-    }
-    ;
+    };
 
     protected Movie(android.os.Parcel in) {
         this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
@@ -118,7 +117,25 @@ public class Movie implements Parcelable
         this.voteCount = ((Long) in.readValue((Long.class.getClassLoader())));
     }
 
+    @Ignore
     public Movie() {
+    }
+
+    public Movie(int id, String originalLanguage, String originalTitle, String overview
+            , Double popularity, String posterPath, Date releaseDate,
+                 String title, Boolean video, Double voteAverage, Long voteCount, int runtime) {
+        this.id = id;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.releaseDate = releaseDate;
+        this.title = title;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.voteCount = voteCount;
+        this.runtime = runtime;
     }
 
     public Boolean getAdult() {
@@ -251,7 +268,7 @@ public class Movie implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 

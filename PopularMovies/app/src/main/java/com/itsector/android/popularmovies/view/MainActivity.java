@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Repository.CURRENT_PAGE = 1;
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        mainActivityViewModel.setContext(this);
         mainActivityViewModel.setSelectedSortOption(sortOption);
         mainActivityViewModel.getMovieCollection().observe(this, collection -> {
             mMovieAdapter.setMoviesList(collection.getResults());

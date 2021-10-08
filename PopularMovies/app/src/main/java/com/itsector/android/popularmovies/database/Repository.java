@@ -14,6 +14,7 @@ import com.itsector.android.popularmovies.model.ReviewCollection;
 import com.itsector.android.popularmovies.model.TrailerCollection;
 import com.itsector.android.popularmovies.network.MovieAPI;
 import com.itsector.android.popularmovies.network.RequestInterceptor;
+import com.itsector.android.popularmovies.utils.ConcurrentExecutor;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -225,16 +226,34 @@ public class Repository {
     }
 
     /*                         Room calls                                       */
-    public void addFavorite(Context context, Movie toAdd){
-
+    public void addFavorite(final Context context, final Movie toAdd){
+        Runnable r = () -> MovieDatabase.getInstance(context).movieDao().addFavorite(toAdd);
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void deleteFavorite(Context context, Movie toDelete){
-
+    public void deleteFavorite(final Context context, final Movie toDelete){
+        Runnable r = () -> MovieDatabase.getInstance(context).movieDao().deleteFavorite(toDelete);
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void checkFavorite(MutableLiveData<Boolean> isFav, Movie toCheck){
+    public void checkFavorite(final Context context, MutableLiveData<Boolean> isFav, final Movie toCheck){
+        Runnable r = () -> {
+            Boolean b = MovieDatabase.getInstance(context).movieDao().findMovie(toCheck.getId());
+            if(Boolean.TRUE.equals(b)){
+                isFav.postValue(Boolean.TRUE);
+            }
+        };
+        ConcurrentExecutor.getInstance().submit(r);
+    }
 
+    //TODO: get favorites
+    public void getFavorites(final Context context, MutableLiveData<List<Movie>> favorites){
+        Runnable r = () -> {
+            List<Movie> favs = MovieDatabase.getInstance(context).movieDao().getFavorites();
+            if(favs != null)
+                favs.forEach(movie -> Log.v("MOVIE IN DB", movie.getTitle()));
+        };
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
     private ReviewCollection mergeReviews(ReviewCollection oldR, ReviewCollection newR) {

@@ -47,6 +47,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         mDataBinding = DataBindingUtil.setContentView(this,
                 R.layout.activity_detail);
+        mDataBinding.setLifecycleOwner(this);
 
         mMovie = getIntent().getExtras().getParcelable("Movie");
 
@@ -71,9 +72,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initViewModel() {
         mViewModel = new ViewModelProvider(this).get(DetailActivityViewModel.class);
+
+
         mViewModel.setMovie(mMovie);
         mViewModel.getMovieDetails().observe(this, movie -> {
             mDataBinding.movieDurationTv.setText(movie.getRuntime() + "min");
+            mViewModel.setMovie(movie);
         });
 
         mViewModel.getMovieTrailers().observe(this, trailerCollection -> {
@@ -83,10 +87,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mViewModel.getMovieReviews().observe(this, reviewCollection -> {
             mReviewAdapter.setReviewList(reviewCollection.getResults());
             mReviewAdapter.notifyDataSetChanged();
-            /*mReviewAdapter.notifyItemRangeChanged(collection.getNewMoviesStartIndex()
-                    , collection.getItemsSize());*/
-            Log.v("REVIEW COLLECTION", String.valueOf(reviewCollection.getPage()));
         });
+
+        mViewModel.getIsFav(this).observe(this, this::setupFavoriteButtonView);
+    }
+
+    private void setupFavoriteButtonView(Boolean isFav) {
+        if(Boolean.TRUE.equals(isFav)){
+            mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_on));
+            isFavBtnEnabled = true;
+        }
     }
 
     private void initViews() {
@@ -172,8 +182,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         } else if (view.getId() == R.id.favorite_btn) {
             if (isFavBtnEnabled) {
                 mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_off));
+                mViewModel.removeFavorite(this);
             } else {
                 mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_on));
+                mViewModel.addFavorite(this);
             }
             isFavBtnEnabled = !isFavBtnEnabled;
         }

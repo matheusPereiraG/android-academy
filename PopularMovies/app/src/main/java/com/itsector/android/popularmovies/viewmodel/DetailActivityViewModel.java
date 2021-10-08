@@ -1,5 +1,7 @@
 package com.itsector.android.popularmovies.viewmodel;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -12,6 +14,7 @@ public class DetailActivityViewModel extends ViewModel {
     private MutableLiveData<Movie> mMovieDetails;
     private MutableLiveData<TrailerCollection> mMovieTrailers;
     private MutableLiveData<ReviewCollection> mMovieReviews;
+    private MutableLiveData<Boolean> mIsFav;
     private Movie mMovie;
 
     public MutableLiveData<Movie> getMovieDetails() {
@@ -38,6 +41,14 @@ public class DetailActivityViewModel extends ViewModel {
         return mMovieReviews;
     }
 
+    public MutableLiveData<Boolean> getIsFav(Context context) {
+        if (mIsFav == null) {
+            mIsFav = new MutableLiveData<Boolean>();
+            checkFavorite(context);
+        }
+        return mIsFav;
+    }
+
     private void loadTrailers() {
         Repository.getInstance().getMovieTrailers(mMovieTrailers, mMovie.getId());
     }
@@ -54,5 +65,15 @@ public class DetailActivityViewModel extends ViewModel {
         mMovie = movie;
     }
 
+    public void addFavorite(Context context){
+        Repository.getInstance().addFavorite(context, mMovie);
+    }
 
+    public void removeFavorite(Context context){
+        Repository.getInstance().deleteFavorite(context, mMovie);
+    }
+
+    private void checkFavorite(Context context) {
+        Repository.getInstance().checkFavorite(context, mIsFav, mMovie);
+    }
 }
