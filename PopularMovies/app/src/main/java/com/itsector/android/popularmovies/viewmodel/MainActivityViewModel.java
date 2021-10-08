@@ -17,8 +17,6 @@ import java.util.List;
 
 public class MainActivityViewModel extends ViewModel {
 
-    //TODO: Get data to show on the view, invoke MovieClient
-
     private Context mContext;
     private MutableLiveData<MovieCollection> mMovieCol;
     private int mSelectedSortOption;
@@ -38,7 +36,6 @@ public class MainActivityViewModel extends ViewModel {
     public MutableLiveData<MovieCollection> getMovieCollection() {
         if (mMovieCol == null) {
             mMovieCol = new MutableLiveData<MovieCollection>();
-            //TODO: Get settings
             loadMovies();
         }
         return mMovieCol;

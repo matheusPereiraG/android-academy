@@ -69,201 +69,221 @@ public class Repository {
     }
 
     /*                         Retrofit calls                                       */
-    public void getPopularMovies(MutableLiveData<MovieCollection> mMovieCol) {
-        MovieCollection oldC = mMovieCol.getValue();
-        int nextPage = 1;
-        if (oldC != null) {
-            if(oldC.getCollectionType().equals("popular"))
-                nextPage = oldC.getResults().size() / ITEMS_PER_PAGE +1;
-        }
+    public void getPopularMovies(final MutableLiveData<MovieCollection> mMovieCol) {
+        Runnable r = () -> {
+            MovieCollection oldC = mMovieCol.getValue();
+            int nextPage = 1;
+            if (oldC != null) {
+                if (oldC.getCollectionType().equals("popular"))
+                    nextPage = oldC.getResults().size() / ITEMS_PER_PAGE + 1;
+            }
 
-        Log.v(TAG, "POPULAR NEXT PAGE: " + nextPage);
+            Call<MovieCollection> call = service.getPopularMovies(nextPage);
+            call.enqueue(new Callback<MovieCollection>() {
+                @Override
+                public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e(TAG, String.valueOf(response.code()));
+                        Log.e(TAG, response.errorBody().toString());
+                    } else {
+                        MovieCollection newCol;
+                        MovieCollection oldCol;
+                        try {
+                            newCol = response.body();
+                            newCol.setCollectionType("popular");
+                            oldCol = mMovieCol.getValue();
+                            mMovieCol.setValue(mergeMovieCollection(oldCol, newCol));
 
-        Call<MovieCollection> call = service.getPopularMovies(nextPage);
-        call.enqueue(new Callback<MovieCollection>() {
-            @Override
-            public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
-                if (!response.isSuccessful()) {
-                    Log.e(TAG, String.valueOf(response.code()));
-                    Log.e(TAG, response.errorBody().toString());
-                } else {
-                    MovieCollection newCol;
-                    MovieCollection oldCol;
-                    try {
-                        newCol = response.body();
-                        newCol.setCollectionType("popular");
-                        oldCol = mMovieCol.getValue();
-                        mMovieCol.setValue(mergeMovieCollection(oldCol, newCol));
-
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<MovieCollection> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<MovieCollection> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void getTopRatedMovies(MutableLiveData<MovieCollection> mMovieCol) {
-        MovieCollection oldC = mMovieCol.getValue();
-        int nextPage = 1;
-        if (oldC != null) {
-            if(oldC.getCollectionType().equals("top_rated"))
-                nextPage = oldC.getResults().size() / ITEMS_PER_PAGE +1;
-        }
+    public void getTopRatedMovies(final MutableLiveData<MovieCollection> mMovieCol) {
+        Runnable r = () -> {
+            MovieCollection oldC = mMovieCol.getValue();
+            int nextPage = 1;
+            if (oldC != null) {
+                if (oldC.getCollectionType().equals("top_rated"))
+                    nextPage = oldC.getResults().size() / ITEMS_PER_PAGE + 1;
+            }
 
-        Log.v(TAG, "TOP RATED NEXT PAGE: " + nextPage);
-
-        Call<MovieCollection> call = service.getTopRatedMovies(nextPage);
-        call.enqueue(new Callback<MovieCollection>() {
-            @Override
-            public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
-                if (!response.isSuccessful()) {
-                    Log.e(TAG, String.valueOf(response.code()));
-                    Log.e(TAG, response.errorBody().toString());
-                } else {
-                    MovieCollection newCol;
-                    MovieCollection oldCol;
-                    try {
-                        newCol = response.body();
-                        newCol.setCollectionType("top_rated");
-                        oldCol = mMovieCol.getValue();
-                        mMovieCol.setValue(mergeMovieCollection(oldCol, newCol));
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+            Call<MovieCollection> call = service.getTopRatedMovies(nextPage);
+            call.enqueue(new Callback<MovieCollection>() {
+                @Override
+                public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e(TAG, String.valueOf(response.code()));
+                        Log.e(TAG, response.errorBody().toString());
+                    } else {
+                        MovieCollection newCol;
+                        MovieCollection oldCol;
+                        try {
+                            newCol = response.body();
+                            newCol.setCollectionType("top_rated");
+                            oldCol = mMovieCol.getValue();
+                            mMovieCol.setValue(mergeMovieCollection(oldCol, newCol));
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<MovieCollection> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<MovieCollection> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
+
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void getMovieDetails(MutableLiveData<Movie> mMovieDetails, int id) {
-        Call<Movie> call = service.getMovieDetails(id);
-        call.enqueue(new Callback<Movie>() {
-            @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
-                if (!response.isSuccessful()) {
-                    Log.e(TAG, String.valueOf(response.code()));
-                    Log.e(TAG, response.errorBody().toString());
-                } else {
-                    Movie movieDetails;
-                    try {
-                        movieDetails = response.body();
-                        mMovieDetails.setValue(movieDetails);
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+    public void getMovieDetails(final MutableLiveData<Movie> mMovieDetails, final int id) {
+        Runnable r = () -> {
+            Call<Movie> call = service.getMovieDetails(id);
+            call.enqueue(new Callback<Movie>() {
+                @Override
+                public void onResponse(Call<Movie> call, Response<Movie> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e(TAG, String.valueOf(response.code()));
+                        Log.e(TAG, response.errorBody().toString());
+                    } else {
+                        Movie movieDetails;
+                        try {
+                            movieDetails = response.body();
+                            mMovieDetails.setValue(movieDetails);
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<Movie> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void getMovieTrailers(MutableLiveData<TrailerCollection> mMovieTrailers, int id) {
-        Call<TrailerCollection> call = service.getMovieTrailers(id);
-        call.enqueue(new Callback<TrailerCollection>() {
-            @Override
-            public void onResponse(Call<TrailerCollection> call, Response<TrailerCollection> response) {
-                if (!response.isSuccessful()) {
-                    Log.e(TAG, String.valueOf(response.code()));
-                    Log.e(TAG, response.errorBody().toString());
-                } else {
-                    TrailerCollection movieTrailers;
-                    try {
-                        movieTrailers = response.body();
-                        mMovieTrailers.setValue(movieTrailers);
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+    public void getMovieTrailers(final MutableLiveData<TrailerCollection> mMovieTrailers, final int id) {
+        Runnable r = () -> {
+            Call<TrailerCollection> call = service.getMovieTrailers(id);
+            call.enqueue(new Callback<TrailerCollection>() {
+                @Override
+                public void onResponse(Call<TrailerCollection> call, Response<TrailerCollection> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e(TAG, String.valueOf(response.code()));
+                        Log.e(TAG, response.errorBody().toString());
+                    } else {
+                        TrailerCollection movieTrailers;
+                        try {
+                            movieTrailers = response.body();
+                            mMovieTrailers.setValue(movieTrailers);
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<TrailerCollection> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<TrailerCollection> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
+
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void getMovieReviews(MutableLiveData<ReviewCollection> mMovieReviews, int id) {
-        int nextPage = 1;
-        if (mMovieReviews.getValue() != null) {
-            nextPage = mMovieReviews.getValue().getResults().size() / ITEMS_PER_PAGE + 1;
-            if(mMovieReviews.getValue().getPage() == nextPage)
-                return;
-            if (nextPage > mMovieReviews.getValue().getTotalPages())
-                return;
-        }
+    public void getMovieReviews(final MutableLiveData<ReviewCollection> mMovieReviews, final int id) {
+        Runnable r = () -> {
+            int nextPage = 1;
+            if (mMovieReviews.getValue() != null) {
+                nextPage = mMovieReviews.getValue().getResults().size() / ITEMS_PER_PAGE + 1;
+                if (mMovieReviews.getValue().getPage() == nextPage)
+                    return;
+                if (nextPage > mMovieReviews.getValue().getTotalPages())
+                    return;
+            }
 
-        Call<ReviewCollection> call = service.getMovieReviews(id, nextPage);
-        call.enqueue(new Callback<ReviewCollection>() {
-            @Override
-            public void onResponse(Call<ReviewCollection> call, Response<ReviewCollection> response) {
-                if (!response.isSuccessful()) {
-                    Log.e(TAG, String.valueOf(response.code()));
-                    Log.e(TAG, response.errorBody().toString());
-                } else {
-                    ReviewCollection movieReviews;
-                    try {
-                        movieReviews = response.body();
-                        mMovieReviews.setValue(mergeReviews(mMovieReviews.getValue(), movieReviews));
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+            Call<ReviewCollection> call = service.getMovieReviews(id, nextPage);
+            call.enqueue(new Callback<ReviewCollection>() {
+                @Override
+                public void onResponse(Call<ReviewCollection> call, Response<ReviewCollection> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e(TAG, String.valueOf(response.code()));
+                        Log.e(TAG, response.errorBody().toString());
+                    } else {
+                        ReviewCollection movieReviews;
+                        try {
+                            movieReviews = response.body();
+                            mMovieReviews.setValue(mergeReviews(mMovieReviews.getValue(), movieReviews));
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ReviewCollection> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<ReviewCollection> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
+
+        ConcurrentExecutor.getInstance().submit(r);
     }
 
     /*                         Room calls                                       */
-    public void addFavorite(final Context context, final Movie toAdd){
+    public void addFavorite(final Context context, final Movie toAdd) {
         Runnable r = () -> MovieDatabase.getInstance(context).movieDao().addFavorite(toAdd);
         ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void deleteFavorite(final Context context, final Movie toDelete){
+    public void deleteFavorite(final Context context, final Movie toDelete) {
         Runnable r = () -> MovieDatabase.getInstance(context).movieDao().deleteFavorite(toDelete);
         ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void checkFavorite(final Context context, MutableLiveData<Boolean> isFav, final Movie toCheck){
+    public void checkFavorite(final Context context, MutableLiveData<Boolean> isFav, final Movie toCheck) {
         Runnable r = () -> {
             Boolean b = MovieDatabase.getInstance(context).movieDao().findMovie(toCheck.getId());
-            if(Boolean.TRUE.equals(b)){
+            if (Boolean.TRUE.equals(b)) {
                 isFav.postValue(Boolean.TRUE);
             }
         };
         ConcurrentExecutor.getInstance().submit(r);
     }
+    
+    public void getFavorites(final Context context, MutableLiveData<MovieCollection> movieCol) {
 
-    //TODO: get favorites
-    public void getFavorites(final Context context, MutableLiveData<MovieCollection> movieCol){
         Runnable r = () -> {
             List<Movie> fav = MovieDatabase.getInstance(context).movieDao().getFavorites();
-            if(fav != null){
+            if (movieCol.getValue() != null)
+                if (movieCol.getValue().getCollectionType().equals("favorites"))
+                    return;
+
+            if (fav != null) {
                 try {
-                    MovieCollection m = movieCol.getValue();
+                    MovieCollection m = new MovieCollection();
                     m.setResults(fav);
                     m.setPage(1);
-                    movieCol.setValue(m);
+                    m.setCollectionType("favorites");
+                    m.setTotalPages(1);
+                    movieCol.postValue(m);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -286,17 +306,16 @@ public class Repository {
         return oldR;
     }
 
-    private MovieCollection mergeMovieCollection(MovieCollection oldC, MovieCollection newC){
-        if(oldC == null) return newC;
+    private MovieCollection mergeMovieCollection(MovieCollection oldC, MovieCollection newC) {
+        if (oldC == null) return newC;
 
-        if(oldC.getCollectionType().equals(newC.getCollectionType())){
+        if (oldC.getCollectionType().equals(newC.getCollectionType())) {
             oldC.setNewMoviesStartIndex(oldC.getResults().size());
             List<Movie> newMovieList = oldC.getResults();
             newMovieList.addAll(newC.getResults());
             oldC.setResults(newMovieList);
 
-        }
-        else {
+        } else {
             oldC.setNewMoviesStartIndex(0);
             oldC.setResults(newC.getResults());
             oldC.setCollectionType(newC.getCollectionType());
