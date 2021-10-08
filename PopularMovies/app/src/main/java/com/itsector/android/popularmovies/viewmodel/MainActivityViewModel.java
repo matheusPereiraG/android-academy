@@ -21,7 +21,6 @@ public class MainActivityViewModel extends ViewModel {
 
     private Context mContext;
     private MutableLiveData<MovieCollection> mMovieCol;
-    private MutableLiveData<List<Movie>> mFavorites;
     private int mSelectedSortOption;
 
     public void loadPopularMovies() {
@@ -33,7 +32,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     private void loadFavoriteMovies() {
-        Repository.getInstance().getFavorites(mContext, mFavorites);
+        Repository.getInstance().getFavorites(mContext, mMovieCol);
     }
 
     public MutableLiveData<MovieCollection> getMovieCollection() {
@@ -65,38 +64,5 @@ public class MainActivityViewModel extends ViewModel {
 
     public void setContext(Context c) {
         this.mContext = c;
-    }
-
-
-    public static class ScrollListener extends RecyclerView.OnScrollListener {
-        private boolean loading = true;
-        int pastVisiblesItems, visibleItemCount, totalItemCount;
-        private GridLayoutManager mLayoutManager;
-        private MainActivityViewModel mViewModel;
-
-        public ScrollListener(GridLayoutManager layoutManager, MainActivityViewModel model) {
-            super();
-            this.mLayoutManager = layoutManager;
-            this.mViewModel = model;
-        }
-
-        @Override
-        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-
-            if (dy > 0) { //check for scroll down
-                visibleItemCount = mLayoutManager.getChildCount();
-                totalItemCount = mLayoutManager.getItemCount();
-                pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
-
-                if (loading) {
-                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                        loading = false;
-                        Repository.CURRENT_PAGE += 1;
-                        mViewModel.loadMovies();
-                        loading = true;
-                    }
-                }
-            }
-        }
     }
 }

@@ -70,7 +70,16 @@ public class Repository {
 
     /*                         Retrofit calls                                       */
     public void getPopularMovies(MutableLiveData<MovieCollection> mMovieCol) {
-        Call<MovieCollection> call = service.getPopularMovies(CURRENT_PAGE);
+        MovieCollection oldC = mMovieCol.getValue();
+        int nextPage = 1;
+        if (oldC != null) {
+            if(oldC.getCollectionType().equals("popular"))
+                nextPage = oldC.getResults().size() / ITEMS_PER_PAGE +1;
+        }
+
+        Log.v(TAG, "POPULAR NEXT PAGE: " + nextPage);
+
+        Call<MovieCollection> call = service.getPopularMovies(nextPage);
         call.enqueue(new Callback<MovieCollection>() {
             @Override
             public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
@@ -84,12 +93,7 @@ public class Repository {
                         newCol = response.body();
                         newCol.setCollectionType("popular");
                         oldCol = mMovieCol.getValue();
-                        if (oldCol == null)
-                            mMovieCol.setValue(newCol);
-                        else {
-                            oldCol.mergeMovieCollection(newCol);
-                            mMovieCol.setValue(oldCol);
-                        }
+                        mMovieCol.setValue(mergeMovieCollection(oldCol, newCol));
 
                     } catch (NullPointerException e) {
                         e.printStackTrace();
@@ -105,7 +109,16 @@ public class Repository {
     }
 
     public void getTopRatedMovies(MutableLiveData<MovieCollection> mMovieCol) {
-        Call<MovieCollection> call = service.getTopRatedMovies(CURRENT_PAGE);
+        MovieCollection oldC = mMovieCol.getValue();
+        int nextPage = 1;
+        if (oldC != null) {
+            if(oldC.getCollectionType().equals("top_rated"))
+                nextPage = oldC.getResults().size() / ITEMS_PER_PAGE +1;
+        }
+
+        Log.v(TAG, "TOP RATED NEXT PAGE: " + nextPage);
+
+        Call<MovieCollection> call = service.getTopRatedMovies(nextPage);
         call.enqueue(new Callback<MovieCollection>() {
             @Override
             public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
@@ -119,12 +132,7 @@ public class Repository {
                         newCol = response.body();
                         newCol.setCollectionType("top_rated");
                         oldCol = mMovieCol.getValue();
-                        if (oldCol == null)
-                            mMovieCol.setValue(newCol);
-                        else {
-                            oldCol.mergeMovieCollection(newCol);
-                            mMovieCol.setValue(oldCol);
-                        }
+                        mMovieCol.setValue(mergeMovieCollection(oldCol, newCol));
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
@@ -247,11 +255,19 @@ public class Repository {
     }
 
     //TODO: get favorites
-    public void getFavorites(final Context context, MutableLiveData<List<Movie>> favorites){
+    public void getFavorites(final Context context, MutableLiveData<MovieCollection> movieCol){
         Runnable r = () -> {
-            List<Movie> favs = MovieDatabase.getInstance(context).movieDao().getFavorites();
-            if(favs != null)
-                favs.forEach(movie -> Log.v("MOVIE IN DB", movie.getTitle()));
+            List<Movie> fav = MovieDatabase.getInstance(context).movieDao().getFavorites();
+            if(fav != null){
+                try {
+                    MovieCollection m = movieCol.getValue();
+                    m.setResults(fav);
+                    m.setPage(1);
+                    movieCol.setValue(m);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
         };
         ConcurrentExecutor.getInstance().submit(r);
     }
@@ -268,5 +284,28 @@ public class Repository {
         oldR.setTotalResults(newR.getTotalResults());
 
         return oldR;
+    }
+
+    private MovieCollection mergeMovieCollection(MovieCollection oldC, MovieCollection newC){
+        if(oldC == null) return newC;
+
+        if(oldC.getCollectionType().equals(newC.getCollectionType())){
+            oldC.setNewMoviesStartIndex(oldC.getResults().size());
+            List<Movie> newMovieList = oldC.getResults();
+            newMovieList.addAll(newC.getResults());
+            oldC.setResults(newMovieList);
+
+        }
+        else {
+            oldC.setNewMoviesStartIndex(0);
+            oldC.setResults(newC.getResults());
+            oldC.setCollectionType(newC.getCollectionType());
+        }
+
+        oldC.setPage(newC.getPage());
+        oldC.setTotalPages(newC.getTotalPages());
+        oldC.setTotalResults(newC.getTotalResults());
+
+        return oldC;
     }
 }

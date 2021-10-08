@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,7 +20,7 @@ import android.widget.ProgressBar;
 
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.MovieAdapter;
-import com.itsector.android.popularmovies.database.Repository;
+import com.itsector.android.popularmovies.utils.EndlessRecyclerViewScrollListener;
 import com.itsector.android.popularmovies.viewmodel.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager mLayoutManager;
     private Menu mMenu;
     private ProgressBar mProgressBar;
+
+    private EndlessRecyclerViewScrollListener scrollListener;
 
 
     @Override
@@ -46,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModel() {
 
         int sortOption = getSavedPreference();
-        Repository.CURRENT_PAGE = 1;
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         mainActivityViewModel.setContext(this);
@@ -72,8 +74,16 @@ public class MainActivity extends AppCompatActivity {
         mRv.setAdapter(mMovieAdapter);
         mRv.setLayoutManager(mLayoutManager);
 
-        mRv.addOnScrollListener(new MainActivityViewModel.ScrollListener(mLayoutManager,
-                mainActivityViewModel));
+        scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+               mainActivityViewModel.loadMovies();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        mRv.addOnScrollListener(scrollListener);
     }
 
     @Override
@@ -83,12 +93,14 @@ public class MainActivity extends AppCompatActivity {
                 item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
                 MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_top);
                 otherOption.setIcon(0);
+
                 mRv.smoothScrollToPosition(0);
                 mLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                Repository.CURRENT_PAGE = 1;
                 mainActivityViewModel.setSelectedSortOption(0);
                 mainActivityViewModel.loadMovies();
+
+
                 savePreference(0);
             }
 
@@ -98,12 +110,14 @@ public class MainActivity extends AppCompatActivity {
                 item.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_sort_by_check));
                 MenuItem otherOption = (MenuItem) mMenu.findItem(R.id.sort_by_popular);
                 otherOption.setIcon(0);
+
                 mRv.smoothScrollToPosition(0);
                 mLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                Repository.CURRENT_PAGE = 1;
                 mainActivityViewModel.setSelectedSortOption(1);
                 mainActivityViewModel.loadMovies();
+
+
                 savePreference(1);
             }
         }
