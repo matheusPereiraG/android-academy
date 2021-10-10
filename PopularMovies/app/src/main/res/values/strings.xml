@@ -12,4 +12,6 @@
     <string name="read_more">Read More</string>
     <string name="show_less">Show less</string>
     <string name="sort_by_favorites">Favorites</string>
+    <string name="image_poster">Image Poster</string>
+    <string name="add_or_remove_favorite">Add or remove favorite</string>
 </resources>
