@@ -1,7 +1,10 @@
 package com.itsector.android.popularmovies.viewmodel;
 
+import android.app.Application;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,13 +12,18 @@ import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.ReviewCollection;
 import com.itsector.android.popularmovies.model.TrailerCollection;
 import com.itsector.android.popularmovies.database.Repository;
+import com.itsector.android.popularmovies.utils.NetworkUtils;
 
-public class DetailActivityViewModel extends ViewModel {
+public class DetailActivityViewModel extends AndroidViewModel {
     private MutableLiveData<Movie> mMovieDetails;
     private MutableLiveData<TrailerCollection> mMovieTrailers;
     private MutableLiveData<ReviewCollection> mMovieReviews;
     private MutableLiveData<Boolean> mIsFav;
     private Movie mMovie;
+
+    public DetailActivityViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public MutableLiveData<Movie> getMovieDetails() {
         if (mMovieDetails == null) {
@@ -58,6 +66,7 @@ public class DetailActivityViewModel extends ViewModel {
     }
 
     private void loadDetails(){
+        NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
         Repository.getInstance().getMovieDetails(mMovieDetails, mMovie.getId());
     }
 
