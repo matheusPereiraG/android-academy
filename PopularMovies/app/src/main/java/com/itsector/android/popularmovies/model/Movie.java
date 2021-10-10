@@ -4,66 +4,91 @@ package com.itsector.android.popularmovies.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.itsector.android.popularmovies.utils.DateConverter;
 
-public class Movie implements Parcelable
-{
+@Entity(tableName = "movie")
+public class Movie implements Parcelable {
 
+    @SerializedName("id")
+    @Expose
+    @PrimaryKey
+    private int id;
+
+    @Ignore
     @SerializedName("adult")
     @Expose
     private Boolean adult;
+
+    @Ignore
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
+
+    @Ignore
     @SerializedName("genre_ids")
     @Expose
     private List<Long> genreIds = new ArrayList<Long>();
-    @SerializedName("id")
-    @Expose
-    private int id;
+
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
+
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("popularity")
     @Expose
     private Double popularity;
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("release_date")
+    @TypeConverters(DateConverter.class)
     @Expose
     private Date releaseDate;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("video")
     @Expose
     private Boolean video;
+
     @SerializedName("vote_average")
     @Expose
-    private double voteAverage;
+    private Double voteAverage;
+
     @SerializedName("vote_count")
     @Expose
     private Long voteCount;
+
     @SerializedName("runtime")
     @Expose
     private int runtime;
+
     public final static Creator<Movie> CREATOR = new Creator<Movie>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Movie createFromParcel(android.os.Parcel in) {
             return new Movie(in);
@@ -73,8 +98,7 @@ public class Movie implements Parcelable
             return (new Movie[size]);
         }
 
-    }
-    ;
+    };
 
     protected Movie(android.os.Parcel in) {
         this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
@@ -93,7 +117,25 @@ public class Movie implements Parcelable
         this.voteCount = ((Long) in.readValue((Long.class.getClassLoader())));
     }
 
+    @Ignore
     public Movie() {
+    }
+
+    public Movie(int id, String originalLanguage, String originalTitle, String overview
+            , Double popularity, String posterPath, Date releaseDate,
+                 String title, Boolean video, Double voteAverage, Long voteCount, int runtime) {
+        this.id = id;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.releaseDate = releaseDate;
+        this.title = title;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.voteCount = voteCount;
+        this.runtime = runtime;
     }
 
     public Boolean getAdult() {
@@ -226,7 +268,7 @@ public class Movie implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 

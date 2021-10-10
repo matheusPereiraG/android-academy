@@ -1,24 +1,20 @@
 package com.itsector.android.popularmovies.viewmodel;
 
-import android.util.Log;
+import android.content.Context;
 
-import androidx.annotation.NonNull;
-import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.ReviewCollection;
 import com.itsector.android.popularmovies.model.TrailerCollection;
-import com.itsector.android.popularmovies.network.MovieClient;
+import com.itsector.android.popularmovies.database.Repository;
 
 public class DetailActivityViewModel extends ViewModel {
     private MutableLiveData<Movie> mMovieDetails;
     private MutableLiveData<TrailerCollection> mMovieTrailers;
     private MutableLiveData<ReviewCollection> mMovieReviews;
+    private MutableLiveData<Boolean> mIsFav;
     private Movie mMovie;
 
     public MutableLiveData<Movie> getMovieDetails() {
@@ -45,21 +41,39 @@ public class DetailActivityViewModel extends ViewModel {
         return mMovieReviews;
     }
 
+    public MutableLiveData<Boolean> getIsFav(Context context) {
+        if (mIsFav == null) {
+            mIsFav = new MutableLiveData<Boolean>();
+            checkFavorite(context);
+        }
+        return mIsFav;
+    }
+
     private void loadTrailers() {
-        MovieClient.getInstance().getMovieTrailers(mMovieTrailers, mMovie.getId());
+        Repository.getInstance().getMovieTrailers(mMovieTrailers, mMovie.getId());
     }
 
     public void loadReviews() {
-        MovieClient.getInstance().getMovieReviews(mMovieReviews, mMovie.getId());
+        Repository.getInstance().getMovieReviews(mMovieReviews, mMovie.getId());
     }
 
     private void loadDetails(){
-        MovieClient.getInstance().getMovieDetails(mMovieDetails, mMovie.getId());
+        Repository.getInstance().getMovieDetails(mMovieDetails, mMovie.getId());
     }
 
     public void setMovie(Movie movie){
         mMovie = movie;
     }
 
+    public void addFavorite(Context context){
+        Repository.getInstance().addFavorite(context, mMovie);
+    }
 
+    public void removeFavorite(Context context){
+        Repository.getInstance().deleteFavorite(context, mMovie);
+    }
+
+    private void checkFavorite(Context context) {
+        Repository.getInstance().checkFavorite(context, mIsFav, mMovie);
+    }
 }

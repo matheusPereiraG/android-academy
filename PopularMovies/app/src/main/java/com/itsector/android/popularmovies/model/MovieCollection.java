@@ -105,36 +105,13 @@ public class MovieCollection implements Parcelable
         return this.newMoviesStartIndex;
     }
 
+    public void setNewMoviesStartIndex(int index) {this.newMoviesStartIndex = index; }
+
     public int getItemsSize(){
         return this.movies.size();
     }
 
     public int describeContents() {
         return  0;
-    }
-
-    //TODO: prob need to move this to repo logic
-    /**
-     * Function that merges consecutive page results or overwrites movie collection depending
-     * on the sort order.
-     * @param otherCol
-     */
-    public void mergeMovieCollection(MovieCollection otherCol){
-        if(this.collectionType.equals(otherCol.getCollectionType())){
-            this.newMoviesStartIndex = this.movies.size();
-            this.movies.addAll(otherCol.getResults());
-            this.page = otherCol.getPage();
-            this.totalResults = otherCol.getTotalResults();
-            this.totalPages = otherCol.getTotalPages();
-
-        }
-        else {
-            this.newMoviesStartIndex = 0;
-            this.setResults(otherCol.getResults());
-            this.collectionType = otherCol.getCollectionType();
-            this.page = otherCol.getPage();
-            this.totalResults = otherCol.getTotalResults();
-            this.totalPages = otherCol.getTotalPages();
-        }
     }
 }
