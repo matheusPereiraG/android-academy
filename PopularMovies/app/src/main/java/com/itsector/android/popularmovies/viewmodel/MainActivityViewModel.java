@@ -46,7 +46,8 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     public void loadMovies() {
-        NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
+        if(mSelectedSortOption != 2)
+            NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
         if (mSelectedSortOption == 0)
             loadPopularMovies();
         if (mSelectedSortOption == 1)

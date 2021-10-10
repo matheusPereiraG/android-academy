@@ -58,12 +58,10 @@ public class DetailActivityViewModel extends AndroidViewModel {
     }
 
     private void loadTrailers() {
-        NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
         Repository.getInstance().getMovieTrailers(mMovieTrailers, mMovie.getId());
     }
 
     public void loadReviews() {
-        NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
         Repository.getInstance().getMovieReviews(mMovieReviews, mMovie.getId());
     }
 
