@@ -14,9 +14,6 @@ public class Review implements Parcelable
     @SerializedName("author")
     @Expose
     private String author;
-    @SerializedName("author_details")
-    @Expose
-    private AuthorDetails authorDetails;
     @SerializedName("content")
     @Expose
     private String content;
@@ -51,7 +48,6 @@ public class Review implements Parcelable
 
     protected Review(android.os.Parcel in) {
         this.author = ((String) in.readValue((String.class.getClassLoader())));
-        this.authorDetails = ((AuthorDetails) in.readValue((AuthorDetails.class.getClassLoader())));
         this.content = ((String) in.readValue((String.class.getClassLoader())));
         this.createdAt = ((Date) in.readValue((String.class.getClassLoader())));
         this.id = ((String) in.readValue((String.class.getClassLoader())));
@@ -68,14 +64,6 @@ public class Review implements Parcelable
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public AuthorDetails getAuthorDetails() {
-        return authorDetails;
-    }
-
-    public void setAuthorDetails(AuthorDetails authorDetails) {
-        this.authorDetails = authorDetails;
     }
 
     public String getContent() {
@@ -120,7 +108,6 @@ public class Review implements Parcelable
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(author);
-        dest.writeValue(authorDetails);
         dest.writeValue(content);
         dest.writeValue(createdAt);
         dest.writeValue(id);
