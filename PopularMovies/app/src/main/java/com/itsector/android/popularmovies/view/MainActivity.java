@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 mainActivityViewModel.setSelectedSortOption(2);
+                mProgressBar.setVisibility(View.GONE);
                 mainActivityViewModel.loadMovies();
 
                 savePreference(2);
