@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.MovieAdapter;
 import com.itsector.android.popularmovies.utils.EndlessRecyclerViewScrollListener;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRv;
     private GridLayoutManager mLayoutManager;
     private Menu mMenu;
-    private ProgressBar mProgressBar;
+    private LinearProgressIndicator mProgressBar;
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
 
-        mProgressBar = findViewById(R.id.progress_bar);
+        mProgressBar = findViewById(R.id.progress_horizontal);
     }
 
     private void initViewModel() {
@@ -80,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                mainActivityViewModel.loadMovies();
+                if(mainActivityViewModel.getSelectedSortOption() != 2){
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mainActivityViewModel.loadMovies();
+                }
             }
         };
 
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 mLayoutManager.scrollToPositionWithOffset(0, 0);
 
                 mainActivityViewModel.setSelectedSortOption(0);
+                mProgressBar.setVisibility(View.VISIBLE);
                 mainActivityViewModel.loadMovies();
 
                 savePreference(0);
@@ -113,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 mLayoutManager.scrollToPositionWithOffset(0, 0);
 
                 mainActivityViewModel.setSelectedSortOption(1);
+                mProgressBar.setVisibility(View.VISIBLE);
                 mainActivityViewModel.loadMovies();
 
                 savePreference(1);
@@ -128,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 mainActivityViewModel.setSelectedSortOption(2);
+                //mProgressBar.setVisibility(View.VISIBLE);
                 mainActivityViewModel.loadMovies();
 
                 savePreference(2);
