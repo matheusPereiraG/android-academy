@@ -1,25 +1,29 @@
 package com.itsector.android.popularmovies.viewmodel;
 
+import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
 import com.itsector.android.popularmovies.database.Repository;
+import com.itsector.android.popularmovies.utils.NetworkUtils;
 
-import java.util.List;
 
-public class MainActivityViewModel extends ViewModel {
+public class MainActivityViewModel extends AndroidViewModel {
 
-    private Context mContext;
     private MutableLiveData<MovieCollection> mMovieCol;
     private int mSelectedSortOption;
+
+    public MainActivityViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public void loadPopularMovies() {
         Repository.getInstance().getPopularMovies(mMovieCol);
@@ -30,7 +34,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     private void loadFavoriteMovies() {
-        Repository.getInstance().getFavorites(mContext, mMovieCol);
+        Repository.getInstance().getFavorites(getApplication().getApplicationContext(), mMovieCol);
     }
 
     public MutableLiveData<MovieCollection> getMovieCollection() {
@@ -42,6 +46,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void loadMovies() {
+        NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
         if (mSelectedSortOption == 0)
             loadPopularMovies();
         if (mSelectedSortOption == 1)
@@ -59,7 +64,4 @@ public class MainActivityViewModel extends ViewModel {
         return this.mSelectedSortOption;
     }
 
-    public void setContext(Context c) {
-        this.mContext = c;
-    }
 }

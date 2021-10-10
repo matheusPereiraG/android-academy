@@ -15,12 +15,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.snackbar.Snackbar;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.ReviewAdapter;
 import com.itsector.android.popularmovies.databinding.ActivityDetailBinding;
@@ -183,9 +185,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             if (isFavBtnEnabled) {
                 mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_off));
                 mViewModel.removeFavorite(this);
+                Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT).show();
             } else {
                 mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_on));
                 mViewModel.addFavorite(this);
+                Toast.makeText(this, "Added to favorites", Toast.LENGTH_SHORT).show();
             }
             isFavBtnEnabled = !isFavBtnEnabled;
         }

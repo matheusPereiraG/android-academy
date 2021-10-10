@@ -6,21 +6,21 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.MovieAdapter;
+import com.itsector.android.popularmovies.model.MovieCollection;
 import com.itsector.android.popularmovies.utils.EndlessRecyclerViewScrollListener;
 import com.itsector.android.popularmovies.viewmodel.MainActivityViewModel;
 
@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager mLayoutManager;
     private Menu mMenu;
     private LinearProgressIndicator mProgressBar;
-
     private EndlessRecyclerViewScrollListener scrollListener;
 
 
@@ -52,17 +51,8 @@ public class MainActivity extends AppCompatActivity {
         int sortOption = getSavedPreference();
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        mainActivityViewModel.setContext(this);
         mainActivityViewModel.setSelectedSortOption(sortOption);
-        mainActivityViewModel.getMovieCollection().observe(this, collection -> {
-            mMovieAdapter.setMoviesList(collection.getResults());
-
-            if(collection.getCollectionType().equals("favorites"))
-                mMovieAdapter.notifyDataSetChanged();
-            else mMovieAdapter.notifyItemRangeChanged(collection.getNewMoviesStartIndex()
-                    , collection.getItemsSize());
-            mProgressBar.setVisibility(View.GONE);
-        });
+        mainActivityViewModel.getMovieCollection().observe(this, this::updateMovieList);
     }
 
     private void initRecyclerView() {
@@ -89,6 +79,18 @@ public class MainActivity extends AppCompatActivity {
         };
 
         mRv.addOnScrollListener(scrollListener);
+    }
+
+    private void updateMovieList(MovieCollection collection) {
+        mMovieAdapter.setMoviesList(collection.getResults());
+        if(collection.getCollectionType().equals("favorites")){
+            mMovieAdapter.notifyDataSetChanged();
+        }
+        else {
+            mMovieAdapter.notifyItemRangeChanged(collection.getNewMoviesStartIndex()
+                    , collection.getItemsSize());
+        }
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -134,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 mainActivityViewModel.setSelectedSortOption(2);
-                //mProgressBar.setVisibility(View.VISIBLE);
                 mainActivityViewModel.loadMovies();
 
                 savePreference(2);
