@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.MovieCollection;
-import com.itsector.android.popularmovies.model.Review;
 import com.itsector.android.popularmovies.model.ReviewCollection;
 import com.itsector.android.popularmovies.model.TrailerCollection;
 import com.itsector.android.popularmovies.network.MovieAPI;
@@ -33,8 +32,6 @@ public class Repository {
 
     public static final String BASE_URL = "https://api.themoviedb.org/";
     public static final String TAG = "Repository";
-    //TODO: Max pages?
-    private Retrofit retrofit;
     private MovieAPI service;
 
     private Repository() {
@@ -52,7 +49,7 @@ public class Repository {
                 .setDateFormat(DateFormat.FULL, DateFormat.FULL)
                 .create();
 
-        this.retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -77,7 +74,8 @@ public class Repository {
             Call<MovieCollection> call = service.getPopularMovies(nextPage);
             call.enqueue(new Callback<MovieCollection>() {
                 @Override
-                public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
+                public void onResponse(Call<MovieCollection> call,
+                                       Response<MovieCollection> response) {
                     if (!response.isSuccessful()) {
                         Log.e(TAG, String.valueOf(response.code()));
                         Log.e(TAG, response.errorBody().toString());
@@ -114,7 +112,8 @@ public class Repository {
             Call<MovieCollection> call = service.getTopRatedMovies(nextPage);
             call.enqueue(new Callback<MovieCollection>() {
                 @Override
-                public void onResponse(Call<MovieCollection> call, Response<MovieCollection> response) {
+                public void onResponse(Call<MovieCollection> call,
+                                       Response<MovieCollection> response) {
                     if (!response.isSuccessful()) {
                         Log.e(TAG, String.valueOf(response.code()));
                         Log.e(TAG, response.errorBody().toString());
@@ -171,12 +170,14 @@ public class Repository {
         ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void getMovieTrailers(final MutableLiveData<TrailerCollection> mMovieTrailers, final int id) {
+    public void getMovieTrailers(final MutableLiveData<TrailerCollection> mMovieTrailers,
+                                 final int id) {
         Runnable r = () -> {
             Call<TrailerCollection> call = service.getMovieTrailers(id);
             call.enqueue(new Callback<TrailerCollection>() {
                 @Override
-                public void onResponse(Call<TrailerCollection> call, Response<TrailerCollection> response) {
+                public void onResponse(Call<TrailerCollection> call,
+                                       Response<TrailerCollection> response) {
                     if (!response.isSuccessful()) {
                         Log.e(TAG, String.valueOf(response.code()));
                         Log.e(TAG, response.errorBody().toString());
@@ -201,11 +202,13 @@ public class Repository {
         ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void getMovieReviews(final MutableLiveData<ReviewCollection> mMovieReviews, final int id) {
+    public void getMovieReviews(final MutableLiveData<ReviewCollection> mMovieReviews,
+                                final int id) {
         Runnable r = () -> {
             int nextPage = 1;
             if (mMovieReviews.getValue() != null) {
-                nextPage = mMovieReviews.getValue().getResults().size() / RepoUtils.ITEMS_PER_PAGE + 1;
+                nextPage = mMovieReviews.getValue().getResults().size() / RepoUtils.ITEMS_PER_PAGE
+                        + 1;
                 if (mMovieReviews.getValue().getPage() == nextPage)
                     return;
                 if (nextPage > mMovieReviews.getValue().getTotalPages())
@@ -215,7 +218,8 @@ public class Repository {
             Call<ReviewCollection> call = service.getMovieReviews(id, nextPage);
             call.enqueue(new Callback<ReviewCollection>() {
                 @Override
-                public void onResponse(Call<ReviewCollection> call, Response<ReviewCollection> response) {
+                public void onResponse(Call<ReviewCollection> call,
+                                       Response<ReviewCollection> response) {
                     if (!response.isSuccessful()) {
                         Log.e(TAG, String.valueOf(response.code()));
                         Log.e(TAG, response.errorBody().toString());
@@ -223,7 +227,8 @@ public class Repository {
                         ReviewCollection movieReviews;
                         try {
                             movieReviews = response.body();
-                            mMovieReviews.setValue(RepoUtils.mergeReviews(mMovieReviews.getValue(), movieReviews));
+                            mMovieReviews.setValue(RepoUtils.mergeReviews(
+                                    mMovieReviews.getValue(), movieReviews));
                         } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
@@ -251,7 +256,8 @@ public class Repository {
         ConcurrentExecutor.getInstance().submit(r);
     }
 
-    public void checkFavorite(final Context context, MutableLiveData<Boolean> isFav, final Movie toCheck) {
+    public void checkFavorite(final Context context, MutableLiveData<Boolean> isFav,
+                              final Movie toCheck) {
         Runnable r = () -> {
             Boolean b = MovieDatabase.getInstance(context).movieDao().findMovie(toCheck.getId());
             if (Boolean.TRUE.equals(b)) {

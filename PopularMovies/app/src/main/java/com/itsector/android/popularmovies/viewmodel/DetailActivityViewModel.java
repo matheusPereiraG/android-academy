@@ -6,7 +6,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.ReviewCollection;
@@ -66,7 +65,8 @@ public class DetailActivityViewModel extends AndroidViewModel {
     }
 
     private void loadDetails(){
-        NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
+        if(!NetworkUtils.checkInternetConnection(getApplication().getApplicationContext()))
+            return;
         Repository.getInstance().getMovieDetails(mMovieDetails, mMovie.getId());
     }
 

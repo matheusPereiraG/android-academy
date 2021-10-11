@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 public class ConcurrentExecutor {
 
-    final static int NUM_THREADS = 3;
+    static final int NUM_THREADS = 5;
 
     private static ExecutorService executor;
 

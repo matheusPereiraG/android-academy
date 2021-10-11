@@ -6,10 +6,12 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 public class NetworkUtils {
-    public static void checkInternetConnection(Context context){
+    public static boolean checkInternetConnection(Context context){
         if(!isOnline(context)){
             Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            return false;
         }
+        return true;
     }
 
 

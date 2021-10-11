@@ -1,6 +1,5 @@
 package com.itsector.android.popularmovies.network;
 
-import android.util.Log;
 
 import com.itsector.android.popularmovies.BuildConfig;
 
@@ -24,8 +23,6 @@ public class RequestInterceptor implements Interceptor {
         HttpUrl url = originalHttpUrl.newBuilder()
                 .addQueryParameter("api_key", BuildConfig.API_KEY)
                 .build();
-
-        Log.v("URL", url.toString());
 
         Request.Builder requestBuilder = original.newBuilder()
                 .url(url);

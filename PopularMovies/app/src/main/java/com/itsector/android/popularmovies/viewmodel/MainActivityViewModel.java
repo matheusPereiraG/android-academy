@@ -1,15 +1,9 @@
 package com.itsector.android.popularmovies.viewmodel;
 
 import android.app.Application;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.itsector.android.popularmovies.model.MovieCollection;
 import com.itsector.android.popularmovies.database.Repository;
@@ -46,8 +40,10 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     public void loadMovies() {
-        if(mSelectedSortOption != 2)
-            NetworkUtils.checkInternetConnection(getApplication().getApplicationContext());
+        if(mSelectedSortOption != 2 && !NetworkUtils.checkInternetConnection(getApplication().
+                getApplicationContext()))
+            return;
+
         if (mSelectedSortOption == 0)
             loadPopularMovies();
         if (mSelectedSortOption == 1)

@@ -1,22 +1,16 @@
 package com.itsector.android.popularmovies.adapter;
 
 import android.content.Context;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.itsector.android.popularmovies.R;
-import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.Review;
 
 import java.nio.charset.StandardCharsets;
@@ -26,13 +20,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
-    private Context mContext;
     List<Review> mReviewList;
     static final int CONTENT_REVIEW_MAX_BYTES = 300;
 
-    public ReviewAdapter(Context context) {
+    public ReviewAdapter() {
         super();
-        mContext = context;
         mReviewList = new ArrayList<>();
     }
 

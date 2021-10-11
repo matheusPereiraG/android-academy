@@ -1,5 +1,6 @@
 package com.itsector.android.popularmovies.view;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,13 +9,11 @@ import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +21,6 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.material.snackbar.Snackbar;
 import com.itsector.android.popularmovies.R;
 import com.itsector.android.popularmovies.adapter.ReviewAdapter;
 import com.itsector.android.popularmovies.databinding.ActivityDetailBinding;
@@ -30,7 +28,6 @@ import com.itsector.android.popularmovies.model.Movie;
 import com.itsector.android.popularmovies.model.Trailer;
 import com.itsector.android.popularmovies.network.GlideModule;
 import com.itsector.android.popularmovies.viewmodel.DetailActivityViewModel;
-import com.itsector.android.popularmovies.viewmodel.MainActivityViewModel;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -59,6 +56,24 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         initViews();
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("fav_btn", isFavBtnEnabled);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isFavBtnEnabled = savedInstanceState.getBoolean("fav_btn");
+        if(isFavBtnEnabled)
+            mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(
+                    getApplicationContext(), android.R.drawable.btn_star_big_on));
+        else
+            mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(
+                    getApplicationContext(), android.R.drawable.btn_star_big_off));
     }
 
     private void initActionBar() {
@@ -96,7 +111,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setupFavoriteButtonView(Boolean isFav) {
         if(Boolean.TRUE.equals(isFav)){
-            mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_on));
+            mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(
+                    getApplicationContext(), android.R.drawable.btn_star_big_on));
             isFavBtnEnabled = true;
         }
     }
@@ -134,7 +150,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 .into(mDataBinding.moviePosterIv);
 
         //Init recycler view for reviews
-        mReviewAdapter = new ReviewAdapter(this);
+        mReviewAdapter = new ReviewAdapter();
         mLayoutManager = new LinearLayoutManager(this);
         mDataBinding.reviewsRv.setAdapter(mReviewAdapter);
         mDataBinding.reviewsRv.setLayoutManager(mLayoutManager);
@@ -144,7 +160,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 (NestedScrollView.OnScrollChangeListener)
                         (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                             if (v.getChildAt(v.getChildCount() - 1) != null) {
-                                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight()
+                                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1)
+                                        .getMeasuredHeight()
                                         - v.getMeasuredHeight())) &&
                                         scrollY > oldScrollY) {
                                     if (mDataBinding.reviewsRv.getVisibility() == View.VISIBLE) {
@@ -183,11 +200,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             mDataBinding.trailersContainer.setVisibility(View.VISIBLE);
         } else if (view.getId() == R.id.favorite_btn) {
             if (isFavBtnEnabled) {
-                mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_off));
+                mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(
+                        getApplicationContext(), android.R.drawable.btn_star_big_off));
                 mViewModel.removeFavorite(this);
-                Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT)
+                        .show();
             } else {
-                mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), android.R.drawable.btn_star_big_on));
+                mDataBinding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(
+                        getApplicationContext(), android.R.drawable.btn_star_big_on));
                 mViewModel.addFavorite(this);
                 Toast.makeText(this, "Added to favorites", Toast.LENGTH_SHORT).show();
             }
